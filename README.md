@@ -1,6 +1,6 @@
-# F.A.T Albert
+# BetterSploit (WORK IN PROGRESS)
 
-### The Albert
+
 ---
 #### Synopsis:
   The smart penetration testing tool. This tool is meant as an all in one for penetration testing, **mixing some __tried and tested methods__** for gathering recon on a __single machine__ or an entire __subnet__. 
