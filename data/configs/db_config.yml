@@ -1,0 +1,11 @@
+# Please change the default creds.
+# And make sure to add the correct pathing for albert, and alberts data path.
+pgsql:
+  name: "albert"
+  user: "albert"
+  pass: "albert"
+  host: "localhost"
+
+locations:
+  albert_path: "Albert/"
+  albert_data_path: "Albert/data/database/pgsql_data/"
