@@ -112,3 +112,4 @@ data/tools/Remote Access
 data/tools/Phishing
 data/tools/stub_generation
 .idea/
+.venv/
