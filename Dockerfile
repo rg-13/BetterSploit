@@ -8,7 +8,7 @@ COPY ./requirements.txt /requirements.txt
 RUN pip install -r requirements.txt
 
 COPY ./data /data
-COPY ./albert.py /albert.py
+COPY ./Albert.py /Albert.py
 
 
-CMD ["python3", "albert.py"]
+CMD ["python3", "Albert.py"]
