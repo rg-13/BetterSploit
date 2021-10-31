@@ -2,9 +2,12 @@ import os
 import string
 import secrets
 import psycopg2
+import json
 
 
 class BetterDatabase:
+	baseDirectory = "/opt/BetterSploit"
+	customDirectory = f"{baseDirectory}/lib/custom/"
 	genUserList = []
 	checkDB = True
 	verifyUser = True
@@ -23,6 +26,8 @@ class BetterDatabase:
 	cursor = connectionString.cursor()
 
 	def __init__(self):
+		self.baseDirectory = BetterDatabase.baseDirectory
+		self.customDirectory = BetterDatabase.customDirectory
 		self.genUserList = BetterDatabase.genUserList
 		self.dbaseHost = BetterDatabase.dbaseHost
 		self.dbasePort = BetterDatabase.dbasePort
@@ -144,3 +149,23 @@ class BetterDatabase:
 				self.cursor.execute(f"GRANT SELECT,INSERT,UPDATE ON ")
 				self.genUserList.append(f"{item}:{pw}")
 
+	def buildSploits(self, path=str(), checkcustom=bool(), customdir=str()):
+
+		if path is not None:
+			for dirpath, dirname, filenames in os.walk(path):
+				for fname in filenames:
+					if fname.endswith('json'):
+						fullName = os.path.join(dirpath, fname)
+						with open(fullName, "r", encoding="utf-8") as exp:
+							try:
+								for key in json.load(exp):
+									if key['name']:
+										name = key['name']
+									if key['html_url']:
+										gh_path = key['html_url']
+									if key['description']:
+										desc = key['description']
+									self.cursor.execute('''INSERT INTO bettersploit_sploits(version, cve, path, desciption) VALUES(%s,%s,%s,%s)''', ('No Data', name, gh_path, desc))
+							except (KeyError, psycopg2.IntegrityError) as e:
+								print(f"[ !! ] Appears as though, we have a key error: \n-> {e}")
+								pass
