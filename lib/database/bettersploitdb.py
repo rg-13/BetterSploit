@@ -6,38 +6,29 @@ import json
 
 
 class BetterDatabase:
-	baseDirectory = "/opt/BetterSploit"
-	customDirectory = f"{baseDirectory}/lib/custom/"
-	genUserList = []
-	checkDB = True
-	verifyUser = True
-	multiUser = True
-	dbaseName = "bettersploit_main"
-	dbaseUser = "postgres"
-	dbasePassword = ""
-	dbasePort = 5432
-	dbaseHost = "localhost"
-	connectionString = psycopg2.connect(
-		dbname=dbaseName,
-		user=dbaseUser,
-		password=dbasePassword,
-		host=dbaseHost
-	)
-	cursor = connectionString.cursor()
-
 	def __init__(self):
-		self.baseDirectory = BetterDatabase.baseDirectory
-		self.customDirectory = BetterDatabase.customDirectory
-		self.genUserList = BetterDatabase.genUserList
-		self.dbaseHost = BetterDatabase.dbaseHost
-		self.dbasePort = BetterDatabase.dbasePort
-		self.dbaseUser = BetterDatabase.dbaseUser
-		self.dbasePassword = BetterDatabase.dbasePassword
-		self.dbaseName = BetterDatabase.dbaseName
-		self.checkDB = BetterDatabase.checkDB
-		self.verifyUser = BetterDatabase.verifyUser
-		self.multiUser = BetterDatabase.multiUser
-		self.cursor = BetterDatabase.cursor
+		self.baseDirectory = "/opt/BetterSploit"
+		self.libDirectory = f"{self.baseDirectory}/lib/"
+		self.customDirectory = f"{self.baseDirectory}/lib/custom/"
+		self.toolsDirectroy = f"{self.libDirectory}/tools"
+		self.genUserList = []
+		self.dbaseHost = "localhost"
+		self.dbasePort = 5432
+		self.dbaseUser = "postgres"
+		self.dbasePassword = ""
+		self.dbaseName = "bettersploit_main"
+		self.checkDB = True
+		self.overrideCheckDB = False
+		self.overrideDBUser = False
+		self.verifyUser = True
+		self.multiUser = True
+		self.connectionString = psycopg2.connect(
+			dbname=self.dbaseName,
+			user=self.dbaseUser,
+			password=self.dbasePassword,
+			host=self.dbaseHost
+		)
+		self.cursor = self.connectionString
 
 	def createdb(self, first_run=bool(), userlist=""):
 		if first_run is True:
