@@ -259,7 +259,7 @@ class BetterDatabase:
 	def checkForRun(self):
 		try:
 			for row in self.cursor.execute(
-					'SELECT bettersploit_data.when_run FROM bettersploit_data WHERE when_run = "initial"'):
+					"SELECT bettersploit_data.when_run FROM bettersploit_data WHERE when_run = 'initial'"):
 				if row[ 0 ] is not None:
 					return True
 				else:

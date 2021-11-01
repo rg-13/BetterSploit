@@ -1,5 +1,5 @@
 try:
-    from lib.art.albertLogo import printLogo
+    from lib.art.better import printLogo
     from lib.database.bettersploitdb import BetterDatabase
     from lib.api_keys.api import apikey, vulners_api_key
     from pathlib import Path
