@@ -128,18 +128,28 @@ class BetterDatabase:
 			create unique index bettersploit_evaders_evaderpath_uindex
 				on bettersploit_evaders (evaderpath);
 			''')
+		pw = ''
+		digits = string.digits
+		asciilower = string.ascii_lowercase
+		asciiupper = string.ascii_uppercase
+		all = asciiupper + asciilower + digits
 		if isinstance(userlist, list):
-			pw = ''
-			digits = string.digits
-			asciilower = string.ascii_lowercase
-			asciiupper = string.ascii_uppercase
-			all = asciiupper + asciilower + digits
 			for item in userlist:
 				for _ in range(15):
 					pw += secrets.choice(all)
 				self.cursor.execute(f"CREATE ROLE {item} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
 				self.cursor.execute(f"GRANT SELECT,INSERT,UPDATE ON ")
 				self.genUserList.append(f"{item}:{pw}")
+		else:
+			for _ in range(15):
+				pw += secrets.choice(all)
+				self.cursor.execute(f"CREATE ROLE {userlist} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
+				self.cursor.execute(f"GRANT SELECT,INSERT,UPDATE ON ")
+				self.genUserList.append(f"{userlist}:{pw}")
+		if len(self.genUserList) != 0:
+			return self.genUserList
+		else:
+			return [ "No Users were created." ]
 
 	def buildSploits(self, path=str(), checkcustom=bool(), customdir=str()):
 		if checkcustom is True and customdir is not None:
@@ -149,25 +159,25 @@ class BetterDatabase:
 		else:
 			path = path
 		for dirpath, dirname, filenames in os.walk(path):
-				for fname in filenames:
-					if fname.endswith('json'):
-						fullName = os.path.join(dirpath, fname)
-						with open(fullName, "r", encoding="utf-8") as exp:
-							try:
-								for key in json.load(exp):
-									if key[ 'name' ]:
-										name = key[ 'name' ]
-									if key[ 'html_url' ]:
-										gh_path = key[ 'html_url' ]
-									if key[ 'description' ]:
-										desc = key[ 'description' ]
-									self.cursor.execute(
-										'''INSERT INTO bettersploit_sploits(version, cve, path, desciption) VALUES(%s,
-										%s,%s,%s)''',
-										('No Data', name, gh_path, desc))
-							except (KeyError, psycopg2.IntegrityError) as e:
-								print(f"[ !! ] Appears as though, we have a key error: \n-> {e}")
-								pass
+			for fname in filenames:
+				if fname.endswith('json'):
+					fullName = os.path.join(dirpath, fname)
+					with open(fullName, "r", encoding="utf-8") as exp:
+						try:
+							for key in json.load(exp):
+								if key[ 'name' ]:
+									name = key[ 'name' ]
+								if key[ 'html_url' ]:
+									gh_path = key[ 'html_url' ]
+								if key[ 'description' ]:
+									desc = key[ 'description' ]
+								self.cursor.execute(
+									'''INSERT INTO bettersploit_sploits(version, cve, path, desciption) VALUES(%s,
+									%s,%s,%s)''',
+									('No Data', name, gh_path, desc))
+						except (KeyError, psycopg2.IntegrityError) as e:
+							print(f"[ !! ] Appears as though, we have a key error: \n-> {e}")
+							pass
 
 	def buildEvasionList(self, path):
 		if path is not None:
@@ -192,7 +202,7 @@ class BetterDatabase:
 									evaderpath, evaderfulldesc) VALUES (%s, %s, %s, %s, %s)''',
 									(evName, evDoes, evComms, evDescrip, evPath))
 							except (KeyError, psycopg2.IntegrityError, psycopg2.ProgrammingError,
-							        yaml.composer.ComposerError) as e:
+									yaml.composer.ComposerError) as e:
 								print(f"->\n{e}")
 								pass
 
@@ -240,10 +250,11 @@ class BetterDatabase:
 
 	def query_Sploits(self, tech, version, host):
 		sel_stmt = "SELECT bettersploit_sploits(cve) FROM bettersploit_sploits WHERE bettersploit_sploits(tech) = (?) " \
-		           "AND bettersploit_sploits(version) = (?)"
+				   "" \
+				   "AND bettersploit_sploits(version) = (?)"
 		for row in self.cursor.execute(sel_stmt):
 			self.cursor.execute("UPDATE bettersploit_loot(best_cve) WHERE bettersploit_loot(host) = (?)",
-			                    (row[ 1 ], host))
+								(row[ 1 ], host))
 			print(f"Possible best exploit to use would be: {row[ 1 ]}\n For Host: {host}")
 			print(
 				f"There is an entry in the database located at: SELECT bettersploit_loot(best_cve) FROM "
@@ -269,11 +280,11 @@ class BetterDatabase:
 
 	def queryTools(self, lang, method=''):
 		cprint("[ !! ] In order to add to these modules, simply add your new module into the ./data/scripts folder "
-		       "and re-run the program. [ !! ]", "red", attrs=[ "bold" ])
+			   "and re-run the program. [ !! ]", "red", attrs=[ "bold" ])
 		modules = "[ + ] {} modules:\n".format(lang)
 		cprint(modules, "green", attrs=[ "blink" ])
 		sel_STMT = "SELECT lang, path, purpose, types from bettersploit_tools where bettersploit_tools.lang LIKE %s " \
-		           "ESCAPE ''"
+				   "ESCAPE ''"
 		choice_Select = """SELECT * FROM bettersploit_tools WHERE bettersploit_tools.path = %s """
 		self.cursor.execute(sel_STMT, (lang,))
 		choice_dict = {}
@@ -281,10 +292,10 @@ class BetterDatabase:
 		for row in self.cursor.fetchall():
 			choice_dict.update({i: row[ 2 ]})
 			cprint("|------------------------------------------------------------------------------|\n", "green",
-			       attrs=[ "bold" ])
+				   attrs=[ "bold" ])
 			cprint(f"{i}->{row[ 1 ]}  |  {row[ 3 ]}  |  {row[ 2 ]}  |  {row[ 0 ]}", "blue", attrs=[ "bold" ])
 			cprint("|______________________________________________________________________________|\n", "green",
-			       attrs=[ "bold" ])
+				   attrs=[ "bold" ])
 			i += 1
 		cprint("[ !! ] Press enter to return to the main menu. [ !! ]", "red", attrs=[ "bold", "blink" ])
 		choice = int(input("[ ? ] Please select your choice. [ ? ]\n->"))
@@ -293,7 +304,7 @@ class BetterDatabase:
 
 	def modCount(self):
 		self.cursor.execute("SELECT COUNT(*) FROM (select lang from bettersploit_tools WHERE lang = 'python') AS "
-		                    "TEMP;")
+							"TEMP;")
 		python = self.cursor.fetchone()
 		self.cursor.execute("SELECT COUNT(*) FROM (select lang from bettersploit_tools WHERE lang = 'text') AS TEMP;")
 		text = self.cursor.fetchone()
@@ -310,12 +321,13 @@ class BetterDatabase:
 			"SELECT COUNT(*) FROM (select purpose from bettersploit_tools WHERE purpose = 'general') AS TEMP;")
 		gener = self.cursor.fetchone()
 		cprint(f"| Total Python Mods: {python[ 0 ]} | Total Lists: {text[ 0 ]} | Total persistence mods: {persi[ 0 ]} "
-		       f"| Total Powershell Mods: {psh[ 0 ]} | Total Recon Mods: {recon[ 0 ]} | Total general Items: {gener[0]}", "green",
-		       attrs=[ "bold" ])
+			   f"| Total Powershell Mods: {psh[ 0 ]} | Total Recon Mods: {recon[ 0 ]} | Total general Items: {gener[0]}","green",
+			   attrs=[ "bold" ])
 
 	def rollingLog(self, user, function, target, outfile):
 		stmt = "INSERT INTO bettersploit_log(bettersploit_user, bettersploit_function_used, target, where_is_result) " \
-		       "VALUES(%s, %s, %s, %s)"
+			   "" \
+			   "VALUES(%s, %s, %s, %s)"
 		if user is not None:
 			self.cursor.execute(stmt, (user, function, target, outfile))
 		else:

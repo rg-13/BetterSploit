@@ -36,6 +36,3 @@ def printLogo():
     cprint("R3p0: https://github.com/oldkingcone/Albert", color, attrs=["bold", "dark"])
     cprint("H4ppy H4ck1ng!", color, attrs=["bold", "dark"])
     cprint(f"All custom scripts need to be placed in: lib/custom. Make sure to re-run db checks.", color, attrs=["bold", "dark"])
-
-if __name__ == "__main__":
-    printLogo()
