@@ -30,7 +30,7 @@ class BetterDatabase:
 			password=self.dbasePassword,
 			host=self.dbaseHost
 		)
-		self.cursor = self.connectionString
+		self.cursor = self.connectionString.cursor()
 
 	def createdb(self, first_run=bool(), userlist=""):
 		if first_run is True:
