@@ -336,3 +336,13 @@ class pavelow:
         self.sublist3r_output = self.sublist3r + " " + self.sublist3r_options + " > " + self.sublist3r_output_file_path
         print(bcolors.OKGREEN + self.sublist3r_output + bcolors.ENDC)
         os.system(self.sublist3r_output)
+
+    def nikto(self, host):
+        self.nikto = "nikto"
+        self.nikto_options = "-h " + host + " -output " + self.nikto_output_file_path
+        self.nikto_output_file_name = "nikto_" + host
+        self.nikto_output_file_ext = "txt"
+        self.nikto_output_file_path = self.nikto_output_dir + self.nikto_output_file_name + "." + self.nikto_output_file_ext
+        self.nikto_output = self.nikto + " " + self.nikto_options + " > " + self.nikto_output_file_path
+        print(bcolors.OKGREEN + self.nikto_output + bcolors.ENDC)
+        os.system(self.nikto_output)    
