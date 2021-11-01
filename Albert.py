@@ -1,6 +1,7 @@
 try:
     from lib.art.albertLogo import printLogo
     from lib.database.bettersploitdb import BetterDatabase
+    from lib.api_keys.api import apikey, vulners_api_key
     from pathlib import Path
     from sys import executable
     import urllib
@@ -13,7 +14,6 @@ try:
     import shodan
     import sys
     import nmap
-    from lib.api_keys.api import apikey, vulners_api_key
     import time
     import base64
     import vulners
@@ -486,7 +486,7 @@ if __name__ == '__main__':
                            attrs=["bold", "blink"])
             if options == 'a1':
                 printLogo()
-                from data.tools.scripts.automation import auto_albert
+                from lib.tools.scripts.automation import auto_albert
 
                 try:
                     a = auto_albert.Albert_api
