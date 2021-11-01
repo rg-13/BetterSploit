@@ -27,6 +27,7 @@ import sys
 import time
 import argparse
 import requests
+from random import randint
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 #-------
@@ -136,17 +137,20 @@ class pavelow:
         self.wpscan_output_file_name = ''
         self.wpscan_output_file_ext = ''
         self.wpscan_output_file_path = ''
-        self.nuclei = ''
+        self.nuclei_threads = 30
+        self.nuclei_verbosity = 1
+        self.nuclei_engine = 'standard'
         self.nuclei_options = ''
         self.nuclei_output = ''
+        self.nuclei_modules = 'all, web, database, network, system, exploit'
         self.nuclei_output_file = ''
         self.nuclei_output_dir = ''
         self.nuclei_output_file_name = ''
         self.nuclei_output_file_ext = ''
         self.nuclei_output_file_path = ''
-        self.nuclei_templates = ''
-        self.nuclei_modules = ''
-        self.nuclei_plugins = ''
+        self.nuclei_templates = 'cves, fuzzing, default-logins, vulnerabilities, web_discovery_all'
+        self.nuclei_modules = "discovery", "brute", "vuln", "creds", "enum", "gather", "report", "web"
+        self.nuclei_
         self.httpx = ''
         self.httpx_options = ''
         self.httpx_output = ''
@@ -169,13 +173,8 @@ class pavelow:
         self.dirsearch_db_small_ext = ''
         self.dirsearch_db_small_all = ''
         self.dirsearch_db_small_all_ext = ''
-
-
-
-
-    def banner(self):    
-        print(bcolors.OKGREEN + """""")
-
+        
+    
     def nmap(self, host):
         self.nmap = "nmap"
         self.nmap_options = "-sV -sC -sS -sU -p- -oX"
@@ -345,4 +344,27 @@ class pavelow:
         self.nikto_output_file_path = self.nikto_output_dir + self.nikto_output_file_name + "." + self.nikto_output_file_ext
         self.nikto_output = self.nikto + " " + self.nikto_options + " > " + self.nikto_output_file_path
         print(bcolors.OKGREEN + self.nikto_output + bcolors.ENDC)
-        os.system(self.nikto_output)    
+        os.system(self.nikto_output)
+
+
+    def dnsrecon(self, host):
+        self.dnsrecon = "dnsrecon"
+        self.dnsrecon_options = "-d " + host + " -o " + self.dnsrecon_output_file_path
+        self.dnsrecon_output_file_name = "dnsrecon_" + host
+        self.dnsrecon_output_file_ext = "txt"
+        self.dnsrecon_output_file_path = self.dnsrecon_output_dir + self.dnsrecon_output_file_name + "." + self.dnsrecon_output_file_ext
+        self.dnsrecon_output = self.dnsrecon + " " + self.dnsrecon_options + " > " + self.dnsrecon_output_file_path
+        print(bcolors.OKGREEN + self.dnsrecon_output + bcolors.ENDC)
+        os.system(self.dnsrecon_output)
+
+
+    def nuclei(self, host):
+        self.nuclei = "nuclei"
+        self.__module__ = "nuclei"
+        self.nuclei_options = "-u " + host + " -o " + self.nuclei_output_file_path + " -m " + self.nuclei_modules + " -t " + self.nuclei_threads + " -e " + self.nuclei_engine  + " -v " + self.nuclei_verbose
+        self.nuclei_output_file_name = "nuclei_" + host
+        self.nuclei_output_file_ext = "txt"
+        self.nuclei_output_file_path = self.nuclei_output_dir + self.nuclei_output_file_name + "." + self.nuclei_output_file_ext
+        self.nuclei_output = self.nuclei + " " + self.nuclei_options + " > " + self.nuclei_output_file_path
+        print(bcolors.OKGREEN + self.nuclei_output + bcolors.ENDC)
+        os.system(self.nuclei_output)
