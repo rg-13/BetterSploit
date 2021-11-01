@@ -12,6 +12,7 @@ nuclei="/usr/share/nuclei"
 nuclei_templates="/usr/share/nuclei/templates"
 nuclei_modules="/usr/share/nuclei/modules"
 nuclei_plugins="/usr/share/nuclei/plugins"
+xsstrike="/usr/share/xsstrike"
 httpx="/usr/share/httpx"
 dirsearch="/usr/share/dirb"
 dirsearch_db="/usr/share/dirb/wordlists/common.txt"
@@ -43,17 +44,33 @@ class bcolors:
 #-------
 class pavelow:
     def __init__(self):
-        self.sql = sqldir
-        self.fi = fidir
-        self.joom = joomdir
-        self.com = comdir
-        self.sub = subdir
-        self.sho = sho
-        self.nuclei = nuclei
+        self.sqlmap="sqlmap"
+        self.fimap="fimap"
+        self.gobuster="gobuster"
+        self.httpx="httpx"
+        self.subjack = "subjack"
+        self.waybackurls = "waybackurls"
+        self.whatweb = "whatweb"
+        self.wpscan = wpscan
+        self.amass = "amass"
+        self.zaproxy = "zaproxy"
+        self.jexboss = jexboss
+        self.dirsearch = dirsearch
+        self.shodan = sho
+        self.dirb = "dirb"
+        self.commix = "commix"
+        self.nmap = "nmap"
+        self.nuclei = "nuclei"
+        self.assetfinder = "assetfinder"
+        self.dnsrecon = "dnsrecon"
+        self.subfinder = "subfinder"
+        self.sublist3r = "sublist3r"
+        self.joomscan = "joomscan"
+        self.nikto = "nikto"
+    
         self.nuclei_templates = nuclei_templates
         self.nuclei_modules = nuclei_modules
         self.nuclei_plugins = nuclei_plugins
-        self.httpx = httpx
         self.dirsearch = dirsearch
         self.dirsearch_db = dirsearch_db
         self.dirsearch_db_ext = dirsearch_db_ext
@@ -61,12 +78,7 @@ class pavelow:
         self.dirsearch_db_big_ext = dirsearch_db_big_ext
         self.dirsearch_db_big_all = dirsearch_db_big_all
         self.dirsearch_db_big_all_ext = dirsearch_db_big_all_ext
-        self.jexboss = jexboss
-        self.wpscan = wpscan
         self.host = ""
-        self.help = ''
-        self.banner = ''
-        self.nmap = ''
         self.nmap_options = ''
         self.nmap_ports = ''
         self.nmap_output = ''
@@ -75,7 +87,6 @@ class pavelow:
         self.nmap_output_file_name = ''
         self.nmap_output_file_ext = ''
         self.nmap_output_file_path = ''
-        self.sqlmap = ''
         self.sqlmap_options = ''
         self.sqlmap_output = ''
         self.sqlmap_output_file = ''
@@ -83,7 +94,6 @@ class pavelow:
         self.sqlmap_output_file_name = ''
         self.sqlmap_output_file_ext = ''
         self.sqlmap_output_file_path = ''
-        self.fimap = ''
         self.fimap_options = ''
         self.fimap_output = ''
         self.fimap_output_file = ''
@@ -91,7 +101,6 @@ class pavelow:
         self.fimap_output_file_name = ''
         self.fimap_output_file_ext = ''
         self.fimap_output_file_path = ''
-        self.joomscan = ''
         self.joomscan_options = ''
         self.joomscan_output = ''
         self.joomscan_output_file = ''
@@ -99,13 +108,11 @@ class pavelow:
         self.joomscan_output_file_name = ''
         self.joomscan_output_file_ext = ''
         self.joomscan_output_file_path = ''
-        self.commix = ''
         self.commix_options = ''
         self.commix_output = ''
         self.commix_output_file = ''
         self.commix_output_dir = ''
         self.commix_output_file_name = ''
-        self.jexboss = ''
         self.jexboss_options = ''
         self.jexboss_output = ''
         self.jexboss_output_file = ''
@@ -113,7 +120,6 @@ class pavelow:
         self.jexboss_output_file_name = ''
         self.jexboss_output_file_ext = ''
         self.jexboss_output_file_path = ''
-        self.sublist3r = ''
         self.sublist3r_options = ''
         self.sublist3r_output = ''
         self.sublist3r_output_file = ''
@@ -121,7 +127,6 @@ class pavelow:
         self.sublist3r_output_file_name = ''
         self.sublist3r_output_file_ext = ''
         self.sublist3r_output_file_path = ''
-        self.shodan = ''
         self.shodan_options = ''
         self.shodan_output = ''
         self.shodan_output_file = ''
@@ -129,7 +134,6 @@ class pavelow:
         self.shodan_output_file_name = ''
         self.shodan_output_file_ext = ''
         self.shodan_output_file_path = ''
-        self.wpscan = ''
         self.wpscan_options = ''
         self.wpscan_output = ''
         self.wpscan_output_file = ''
@@ -151,7 +155,6 @@ class pavelow:
         self.nuclei_templates = 'cves, fuzzing, default-logins, vulnerabilities, web_discovery_all'
         self.nuclei_modules = "discovery", "brute", "vuln", "creds", "enum", "gather", "report", "web"
         self.nuclei_
-        self.httpx = ''
         self.httpx_options = ''
         self.httpx_output = ''
         self.httpx_output_file = ''
@@ -159,7 +162,6 @@ class pavelow:
         self.httpx_output_file_name = ''
         self.httpx_output_file_ext = ''
         self.httpx_output_file_path = ''
-        self.dirsearch = ''
         self.dirsearch_options = ''
         self.dirsearch_output = ''
         self.dirsearch_output_file = ''
@@ -175,6 +177,25 @@ class pavelow:
         self.dirsearch_db_small_all_ext = ''
         
     
+    def host_set(self, host):
+        self.host = host
+        if self.host == "":
+            print("[!] Host is empty")
+            sys.exit()
+        else:
+            print("[+] Host is set to: " + self.host)
+    
+    def set_url(self, url):
+        self.url = url
+        if self.url == "":
+            print("[!] URL is empty")
+            sys.exit()
+        else:
+            print("[+] URL is set to: " + self.url)
+    
+    
+
+
     def nmap(self, host):
         self.nmap = "nmap"
         self.nmap_options = "-sV -sC -sS -sU -p- -oX"
@@ -378,3 +399,45 @@ class pavelow:
         self.assetfinder_output = self.assetfinder + " " + self.assetfinder_options + " > " + self.assetfinder_output_file_path
         print(bcolors.OKGREEN + self.assetfinder_output + bcolors.ENDC)
         os.system(self.assetfinder_output)
+
+    def xsstrike(self, host):
+        self.xsstrike = "xsstrike"
+        self.xsstrike_options = "-u " + host + " -o " + self.xsstrike_output_file_path
+        self.xsstrike_output_file_name = "xsstrike_" + host
+        self.xsstrike_output_file_ext = "txt"
+        self.xsstrike_output_file_path = self.xsstrike_output_dir + self.xsstrike_output_file_name + "." + self.xsstrike_output_file_ext
+        self.xsstrike_output = self.xsstrike + " " + self.xsstrike_options + " > " + self.xsstrike_output_file_path
+        print(bcolors.OKGREEN + self.xsstrike_output + bcolors.ENDC)
+        os.system(self.xsstrike_output)
+
+    def waybackurls(self, host):
+        self.waybackurls = "waybackurls"
+        self.waybackurls_options = "-d " + host + " -o " + self.waybackurls_output_file_path
+        self.waybackurls_output_file_name = "waybackurls_" + host
+        self.waybackurls_output_file_ext = "txt"
+        self.waybackurls_output_file_path = self.waybackurls_output_dir + self.waybackurls_output_file_name + "." + self.waybackurls_output_file_ext
+        self.waybackurls_output = self.waybackurls + " " + self.waybackurls_options + " > " + self.waybackurls_output_file_path
+        print(bcolors.OKGREEN + self.waybackurls_output + bcolors.ENDC)
+        os.system(self.waybackurls_output)
+    
+    def subjack(self, host):
+        self.subjack = "subjack"
+        self.subjack_options = "-w " + self.subjack_wordlist + " -t 100 -timeout 30 -ssl -c -v 3 -o " + self.subjack_output_file_path
+        self.subjack_output_file_name = "subjack_" + host
+        self.subjack_output_file_ext = "txt"
+        self.subjack_output_file_path = self.subjack_output_dir + self.subjack_output_file_name + "." + self.subjack_output_file_ext
+        self.subjack_output = self.subjack + " " + self.subjack_options + " " + host + " > " + self.subjack_output_file_path
+        print(bcolors.OKGREEN + self.subjack_output + bcolors.ENDC)
+        os.system(self.subjack_output)
+
+    def zaproxy(self, host):
+        self.zaproxy = "zaproxy"
+        self.zaproxy_options = "-t " + self.zaproxy_timeout + " -u " + host + " -o " + self.zaproxy_output_file_path
+        self.zaproxy_output_file_name = "zaproxy_" + host
+        self.zaproxy_output_file_ext = "txt"
+        self.zaproxy_output_file_path = self.zaproxy_output_dir + self.zaproxy_output_file_name + "." + self.zaproxy_output_file_ext
+        self.zaproxy_output = self.zaproxy + " " + self.zaproxy_options + " > " + self.zaproxy_output_file_path
+        print(bcolors.OKGREEN + self.zaproxy_output + bcolors.ENDC)
+        os.system(self.zaproxy_output)
+
+    
