@@ -14,3 +14,4 @@ psycopg2
 dnsdumpster
 pefile
 pymetasploit3
+pyyaml

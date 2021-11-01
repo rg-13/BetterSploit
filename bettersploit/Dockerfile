@@ -11,5 +11,5 @@ COPY ./data /data
 COPY ./lib /lib
 COPY ./Albert.py /Albert.py
 
-
+EXPOSE 5432
 CMD ["python3", "Albert.py"]
