@@ -13,3 +13,4 @@ geoip2
 psycopg2
 dnsdumpster
 pefile
+pymetasploit3
