@@ -4,7 +4,7 @@ services:
   bettersploit:
     hostname: bettersploit
     build:
-      context: ./albert
+      context: ./bettersplot
     networks:
       - inbound
     restart: unless-stopped
