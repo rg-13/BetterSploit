@@ -368,3 +368,13 @@ class pavelow:
         self.nuclei_output = self.nuclei + " " + self.nuclei_options + " > " + self.nuclei_output_file_path
         print(bcolors.OKGREEN + self.nuclei_output + bcolors.ENDC)
         os.system(self.nuclei_output)
+
+    def assetfinder(self, host):
+        self.assetfinder = "assetfinder"
+        self.assetfinder_options = "-subs-only -subs-max 500 -timeout 10 -threads 20 -banners -ports " + self.assetfinder_ports + " " + host + " -o " + self.assetfinder_output_file_path
+        self.assetfinder_output_file_name = "assetfinder_" + host
+        self.assetfinder_output_file_ext = "txt"
+        self.assetfinder_output_file_path = self.assetfinder_output_dir + self.assetfinder_output_file_name + "." + self.assetfinder_output_file_ext
+        self.assetfinder_output = self.assetfinder + " " + self.assetfinder_options + " > " + self.assetfinder_output_file_path
+        print(bcolors.OKGREEN + self.assetfinder_output + bcolors.ENDC)
+        os.system(self.assetfinder_output)
