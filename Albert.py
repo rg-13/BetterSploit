@@ -1,7 +1,7 @@
 try:
-    from data.art import albertLogo
+    from lib.art.albertLogo import printLogo
+    from lib.database.bettersploitdb import BetterDatabase
     from pathlib import Path
-    from data.database.pgsql import Sploit
     from sys import executable
     import urllib
     import pathlib
@@ -13,7 +13,7 @@ try:
     import shodan
     import sys
     import nmap
-    from data.api_keys.api import apikey, vulners_api_key
+    from lib.api_keys.api import apikey, vulners_api_key
     import time
     import base64
     import vulners
@@ -38,6 +38,7 @@ except AttributeError:
     pass
 
 
+Sploit = BetterDatabase()
 
 #this is super hacky, and very bad. this will add the methods in these directories into the database. still working.
 #@todo add a more streamlined method to add each method into the database, and not just what is limited in these directories.
@@ -447,7 +448,7 @@ if __name__ == '__main__':
         try:
             os.system(clear)
             Sploit.modCount()
-            albertLogo.printLogo()
+            printLogo()
             options = str(input("\n\n\n\t[ + ]\n\t  [ ?? ] Recon Phase:\n\n" \
                                 "\t\t > 1. Shodan\n" \
                                 "\t\t > 2. Nmap(Targeted Scanning of host system written out to XML file)\n" \
@@ -475,7 +476,7 @@ if __name__ == '__main__':
                                 "\n\n[ * ] Choice goes here: \n->")).lower()
 
             if options == 'm1':
-                albertLogo.printLogo()
+                printLogo()
                 cprint("[ ! ] Searching by language............. [ ! ]\n")
                 lang = input("[ ? ] Which language module would you like to search for? [ ? ] \n->")
                 try:
@@ -484,7 +485,7 @@ if __name__ == '__main__':
                     cprint("[ !!! ] Database not found! re-run the program to generate this please. [ !!! ]", "red",
                            attrs=["bold", "blink"])
             if options == 'a1':
-                albertLogo.printLogo()
+                printLogo()
                 from data.tools.scripts.automation import auto_albert
 
                 try:
@@ -497,7 +498,7 @@ if __name__ == '__main__':
 
             if options == '1':
                 os.system(clear)
-                albertLogo.printLogo()
+                printLogo()
                 choice = str(input("[ + ] Is this a file list, or a single IP:\n" \
                                    "\t1 . ) File List\n" \
                                    "\t2 . ) Single IP\n" \
@@ -505,13 +506,13 @@ if __name__ == '__main__':
 
                 if choice == '1':
                     os.system(clear)
-                    albertLogo.printLogo()
+                    printLogo()
                     dest = str(input("[ + ] Please input the name of the file list:\n->"))
                     liz = set()
 
                     if dest == '':
                         os.system(clear)
-                        albertLogo.printLogo()
+                        printLogo()
                         print("[ ! ] Hey! Hey! Hey! Need a file name! [ ! ]")
                         run = 'a'
                     reader = open(dest, "r")
@@ -522,7 +523,7 @@ if __name__ == '__main__':
 
                 if choice == '2':
                     os.system(clear)
-                    albertLogo.printLogo()
+                    printLogo()
                     choice = str(input("[ + ] Please Input the IP: \n->"))
                     atk_log(list_reject(choice))
                     continue
@@ -534,7 +535,7 @@ if __name__ == '__main__':
                 question = str(input("[ + ] Would you like to use custom args with the nmap scan? [ + ] \n->")).lower()
                 if question == 'n':
                     os.system(clear)
-                    albertLogo.printLogo()
+                    printLogo()
                     host = str(input("[ + ] Please input host IP:\n->"))
                     port = str(input("[ + ] Please input port:\n->"))
                     try:
@@ -545,7 +546,7 @@ if __name__ == '__main__':
                     continue
                 if question == 'y':
                     os.system(clear)
-                    albertLogo.printLogo()
+                    printLogo()
                     host = str(input("[ + ] Please input host IP:\n->"))
                     port = str(input("[ + ] Please input port:\n->"))
                     file = './data/XML_Output/{}.xml'.format(host)
@@ -564,7 +565,7 @@ if __name__ == '__main__':
                         continue
 
             if options == "3":
-                albertLogo.printLogo()
+                printLogo()
                 choice = str(input("[ + ] Please input the subnet to detect [ + ]\n->"))
 
                 if choice != '':
@@ -572,7 +573,7 @@ if __name__ == '__main__':
                     continue
 
             if options == "4":
-                albertLogo.printLogo()
+                printLogo()
                 chance = str(input("[ ** ] Are you choosing\n" \
                                    "\t1. ) ARP\n" \
                                    "\t2. ) ICMP ACK [ ** ]\n[ + ] ->"))
@@ -581,19 +582,19 @@ if __name__ == '__main__':
                     continue
 
                 if chance == "1":
-                    albertLogo.printLogo()
+                    printLogo()
                     strike = str(input("[ + ] Please enter the IP, we will need to scan the subnet [ + ]"))
                     atk_log(scapy_selection(subnet_discover(strike)))
                     continue
 
             if options == "5":
-                albertLogo.printLogo()
+                printLogo()
                 domain = str(input("[ * ] Please enter a domain name: [ * ]\n->"))
                 atk_log(dns_dumpster(domain=domain))
                 continue
 
             if options == "6":
-                albertLogo.printLogo()
+                printLogo()
                 choice = str(input("[ + ] VulnersDB search API:\n" \
                                    "\t1 . ) Search by term\n" \
                                    "\t2 . ) Search by CVE code\n" \
@@ -601,28 +602,28 @@ if __name__ == '__main__':
                                    "\t4 . ) Search by term and Version Number [ + ]\n" \
                                    "[ + ] - >"))
                 if choice == "1":
-                    albertLogo.printLogo()
+                    printLogo()
                     term = str(input("[ + } Please input a string to search for [ + ]\n->"))
                     atk_log(vulners_api(option="1", term=term))
                     continue
                 if choice == "2":
-                    albertLogo.printLogo()
+                    printLogo()
                     term = str(input("[ + } Please input a Doc to search for [ + ]\n->"))
                     atk_log(vulners_api(option="2", term=term))
                     continue
                 if choice == "3":
-                    albertLogo.printLogo()
+                    printLogo()
                     term = str(input("[ + } Please input a CVE number to search for \n" \
                                      "example: CVE-2017-14174 [ + ]\n->"))
                     atk_log(vulners_api(option="3", term=term))
                     continue
                 if choice == "4":
-                    albertLogo.printLogo()
+                    printLogo()
                     term = str(input("[ + } Which software are we to search for [ + ]\n->"))
                     atk_log(vulners_api(option="4", term=term))
                     continue
             if options == '7':
-                albertLogo.printLogo()
+                printLogo()
                 from pathlib import Path
 
                 server = str(input("[ + ] Please input the server address [ + ]\n->"))
@@ -632,7 +633,7 @@ if __name__ == '__main__':
                     atk_log(panel_find(server, adminList=Path(admlist)))
                     continue
             if options == '8':
-                albertLogo.printLogo()
+                printLogo()
                 server = str(input("[ + ] Please input a server address/IP [ + ]\n->"))
                 user = str(input("[ + ] Please enter a path for username list, or leave blank for default [ + ]\n->"))
                 password = str(input("[ + ] Please enter path for password list, or leave blank for default [ + ]\n->"))
@@ -641,13 +642,13 @@ if __name__ == '__main__':
                 atk_log(smtp_enum(server=server, user=user, passwd=password))
                 continue
             if options == '9':
-                albertLogo.printLogo()
+                printLogo()
                 import ipaddress
                 ip = str(input("[ + ] Please input an IP to locate [ + ]\n->"))
                 atk_log(iplocator(ip))
                 continue
             if options == 'e1':
-                albertLogo.printLogo()
+                printLogo()
                 question = str(input("[ + ] Is the file outside of the default XML_Output directory? y/N\n->")).lower()
                 if question == 'n':
                     try:
@@ -668,31 +669,31 @@ if __name__ == '__main__':
                         print("[ !! ] Please input a path!! [ !! ]")
                         continue
             if options == "p1":
-                albertLogo.printLogo()
+                printLogo()
                 print("[ * ] Sorry, that is a coming feature! [ * ]")
                 continue
             if options == 'p2':
-                albertLogo.printLogo()
+                printLogo()
                 print("[ + ] Still working on this and perfecting it! check back later! [ + ]")
                 continue
             if options == '':
                 os.system(clear)
-                albertLogo.printLogo()
+                printLogo()
                 print("[ ! ] Please enter a value! [ ! ]")
                 continue
             if options == 'q':
-                albertLogo.printLogo()
+                printLogo()
                 print("[ !! ] Good-Bye! [ !! ]")
                 sys.exit(1)
 
         except KeyboardInterrupt:
             os.system(clear)
-            albertLogo.printLogo()
+            printLogo()
             choice = str(input("\n[ + ] Would you like to exit? [ + ]\n->")).lower()
             if choice != "y":
                 continue
             if choice == 'y':
                 os.system(clear)
-                albertLogo.printLogo()
+                printLogo()
                 print("[ !! ] Good-Bye! [ !! ]")
                 sys.exit(1)
