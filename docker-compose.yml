@@ -1,0 +1,15 @@
+version: "3.4"
+services:
+############################################################################
+  bettersploit:
+    hostname: bettersploit
+    build:
+      context: ./albert
+    networks:
+      - inbound
+    restart: unless-stopped
+#########################################################################
+
+
+networks:
+      inbound:
