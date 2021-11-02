@@ -9,8 +9,6 @@ services:
         - ./postgres/database.env # postgres creds
     networks:
       - inbound
-    ports:
-      - "5432:5432"
     restart: unless-stopped
     depends_on:
       - postgres
