@@ -5,20 +5,35 @@ services:
     hostname: bettersploit
     build:
       context: ./bettersploit
+    env_file:
+        - ./postgres/database.env # postgres creds
     networks:
       - inbound
-    ports:
-      - "5432:5432"
     restart: unless-stopped
+    depends_on:
+      - postgres
 #########################################################################
-  database:
-    image: "postgres" # use latest official postgres version
-    env_file:
-      - database.env # configure postgres
-    volumes:
-      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+  postgres:
+        image: postgres:12
+        restart: unless-stopped
+        env_file:
+          - ./postgres/database.env # configure postgres
+        logging:
+          options:
+            max-size: 10m
+            max-file: "3"
+        ports:
+          - '5432:5432'
+        networks:
+          - inbound
+        volumes: 
+          - ./postgres-data:/var/lib/postgresql/data
+          # copy the sql script to create tables
+          - ./postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+          - ./postgres/postgresql.conf:/etc/postgresql/12/main/postgresql.conf
+#########################################################################
 
 networks:
       inbound:
 volumes:
-  database-data: # named volumes can be managed easier using docker-compose
+  postgres-data:

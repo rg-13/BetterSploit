@@ -10,7 +10,7 @@ proxybroker
 tqdm
 asyncio
 geoip2
-psycopg2
+psycopg2-binary
 dnsdumpster
 pefile
 pymetasploit3
