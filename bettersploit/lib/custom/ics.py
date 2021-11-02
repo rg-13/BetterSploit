@@ -16,8 +16,10 @@ class ICSScan:
         self.host = host
         self.timeout = timeout
         self.nse_location = 'bettersploit/lib/custom/ics_nse/'
-        self.script_list = [self.nse_location + 'Siemens-SIMATIC-PLC-S7.nse','Siemens-WINCC.nse','Siemens-SCALANCE.nse','SIEMENS-HMI-miniweb.nse', 'Siemens-CommunicationsProcessors.nse']
-        self.port = 80, 161, 137
+        self.script_list = [self.nse_location + 'proconos-info','omrom-info','fox-info','enip-info','pcworx-info','modbus-discover.nse','bacnet-info.nse','s7-info.nse','Siemens-SIMATIC-PLC-S7.nse','Siemens-WINCC.nse','Siemens-SCALANCE.nse','SIEMENS-HMI-miniweb.nse', 'Siemens-CommunicationsProcessors.nse']
+        self.port = 80,102,443,502,530,593,789,1089-1091,1911,1962,2222,2404,4000,4840,4843,4911,9600,19999,20000,20547,34962-34964,34980,44818,46823,46824,55000-55003
+        #Breakdown:
+        #https://github.com/gnebbia/nmap_tutorial/blob/master/sections/ics_scada.md
         self.nmap_result = self.nmap_scan()
 
 
