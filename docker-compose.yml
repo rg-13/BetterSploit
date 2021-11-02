@@ -6,7 +6,7 @@ services:
     build:
       context: ./bettersploit
     env_file:
-        - database.env # postgres creds
+        - ./postgres/database.env # postgres creds
     networks:
       - inbound
     ports:
@@ -16,10 +16,10 @@ services:
       - postgres
 #########################################################################
   postgres:
-        image: postgres:10.5
+        image: postgres:12
         restart: unless-stopped
         env_file:
-          - database.env # configure postgres
+          - ./postgres/database.env # configure postgres
         logging:
           options:
             max-size: 10m
@@ -31,7 +31,8 @@ services:
         volumes: 
           - ./postgres-data:/var/lib/postgresql/data
           # copy the sql script to create tables
-          - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+          - ./postgres/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+          - ./postgres/postgresql.conf:/etc/postgresql/12/main/postgresql.conf
 #########################################################################
 
 networks:
