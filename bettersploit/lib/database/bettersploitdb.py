@@ -16,9 +16,9 @@ class BetterDatabase:
 		self.genUserList = [ ]
 		self.dbaseHost = "postgres"
 		self.dbasePort = 5432
-		self.dbaseUser = "postgres"
-		self.dbasePassword = "postgres"
-		self.dbaseName = "betterDB"
+		self.dbaseUser = os.environ.get("POSTGRES_USER")
+		self.dbasePassword = os.environ.get("POSTGRES_PASSWORD")
+		self.dbaseName = os.environ.get("POSTGRES_DB")
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False
