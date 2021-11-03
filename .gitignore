@@ -110,3 +110,4 @@ postgres/database.env
 bettersploit/data/tools
 .idea/
 .venv/
+postgres-data

@@ -13,12 +13,12 @@ class BetterDatabase:
 		self.libDirectory = f"{self.baseDirectory}/lib/"
 		self.customDirectory = f"{self.baseDirectory}/lib/custom/"
 		self.toolsDirectroy = f"{self.libDirectory}/tools"
-		self.genUserList = [ ]
 		self.dbaseHost = "localhost"
+		self.genUserList = []
 		self.dbasePort = 5432
-		self.dbaseUser = "postgres"
+		self.dbaseUser = "bettersploit"
 		self.dbasePassword = ""
-		self.dbaseName = "bettersploit_main"
+		self.dbaseName = "bettersploit"
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False
@@ -32,56 +32,37 @@ class BetterDatabase:
 		)
 		self.cursor = self.connectionString.cursor()
 
-	def createdb(self, userlist=""):
+	def createdb(self, userlist):
 		pw = ''
 		digits = string.digits
 		asciilower = string.ascii_lowercase
 		asciiupper = string.ascii_uppercase
 		all = asciiupper + asciilower + digits
-		if isinstance(userlist, list):
-			for item in userlist:
-				for _ in range(15):
-					pw += secrets.choice(all)
-				self.cursor.execute(f"CREATE ROLE {item} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
-				self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS {item}_encrypted_tools(
-				id serial not null,
-				date_added timestamp default CURRENT_TIMESTAMP not null,
-				path not null,
-				types not null,
-				purpose not null,
-				lang not null,
-				key not null unique,
-				nonce not null unique,
-				cipher not null unique,
-				tag not null unique,
-				hash not null unique
-				)
-				GRANT INSERT,SELECT,UPDATE,DELETE,TRUNCATE,CREATE ON public.{item}_encrypted_tools TO {item}
-				GRANT INSERT,SELECT,UPDATE,DELETE,TRUNCATE,CREATE ON public.{item}_encrypted_tools TO bettersploits
-				""")
-				self.cursor.execute(f"GRANT SELECT,INSERT,UPDATE ON ")
-				self.genUserList.append(f"{item}:{pw}")
-		else:
+		if userlist is not None:
 			for _ in range(15):
 				pw += secrets.choice(all)
-			self.cursor.execute(f"CREATE ROLE {userlist} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
-			self.cursor.execute(f"CREATE ROLE {userlist} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
-			self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS {userlist}_encrypted_tools(
+			self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS public.{userlist}_encrypted_tools(
 				id serial not null,
 				date_added timestamp default CURRENT_TIMESTAMP not null,
-				path not null,
-				types not null,
-				purpose not null,
-				lang not null,
-				key not null unique,
-				nonce not null unique,
-				cipher not null unique,
-				tag not null unique,
-				hash not null unique
+				path text not null,
+				types text not null,
+				purpose text not null,
+				lang text not null,
+				key text not null unique,
+				nonce text not null unique,
+				cipher text not null unique,
+				tag text not null unique,
+				hash text not null unique
 				)
-				GRANT INSERT,SELECT,UPDATE,DELETE,TRUNCATE,CREATE ON public.{userlist}_encrypted_tools TO {userlist}
-				GRANT INSERT,SELECT,UPDATE,DELETE,TRUNCATE,CREATE ON public.{userlist}_encrypted_tools TO bettersploits
 				""")
+			if userlist != self.dbaseUser:
+				self.cursor.execute(f"CREATE ROLE {userlist} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
+				self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO {userlist}")
+				self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO notroot;")
+			self.genUserList.append(f"{userlist}:{pw}")
+			self.cursor.execute("COMMIT")
+		else:
+			raise KeyError(f"Cannot create with empty user: {userlist}")
 		if len(self.genUserList) != 0:
 			return self.genUserList
 		else:
@@ -142,13 +123,13 @@ class BetterDatabase:
 								print(f"->\n{e}")
 								pass
 
-	def buildToolsList(self, directory, purpose, method, is_private):
+	def buildToolsList(self, directory, purpose, method, is_private, private_user):
 		try:
 			extras = list()
 			name_list = list()
 			ps = list()
 			xml_file = list()
-			if method is "build":
+			if method == "build":
 				for file in os.listdir(directory):
 					if file.endswith('.py'):
 						extras.append(directory + '/' + file)
@@ -181,10 +162,10 @@ class BetterDatabase:
 					"INSERT INTO bettersploit_tools(path, types, purpose, lang) VALUES (%s,%s,%s,%s)",
 					(item, "Script", purpose, "Powershell"))
 			else:
-				if is_private is not True:
+				if is_private is not True and private_user is not None:
 					self.cursor.execute(f"INSERT INTO bettersploit_encrypted_tools(path, types, purpose, lang, key, nonce, cipher, tag, hash) VALUES (?,?,?,?)")
 				else:
-					self.cursor.execute(f"INSERT INTO {os.getlogin()}_encrypted_tools VALUES (path, types, purpose, lang, key, nonce, cipher, tag, hash) VALUES (?,?,?,?,?,?,?,?,?)")
+					self.cursor.execute(f"INSERT INTO {private_user}_encrypted_tools VALUES (path, types, purpose, lang, key, nonce, cipher, tag, hash) VALUES (?,?,?,?,?,?,?,?,?)")
 			self.connectionString.commit()
 		except psycopg2.OperationalError as e:
 			print(f"Error happened when populating the database..\n->{e}")
