@@ -16,7 +16,7 @@ class BetterDatabase:
 		self.dbaseHost = "localhost"
 		self.genUserList = []
 		self.dbasePort = 5432
-		self.dbaseUser = "postgres"
+		self.dbaseUser = "bettersploit"
 		self.dbasePassword = ""
 		self.dbaseName = "bettersploit"
 		self.checkDB = True
@@ -58,7 +58,7 @@ class BetterDatabase:
 			if userlist != self.dbaseUser:
 				self.cursor.execute(f"CREATE ROLE {userlist} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
 				self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO {userlist}")
-				self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO {self.dbaseUser};")
+				self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO notroot;")
 			self.genUserList.append(f"{userlist}:{pw}")
 			self.cursor.execute("COMMIT")
 		else:
@@ -123,7 +123,7 @@ class BetterDatabase:
 								print(f"->\n{e}")
 								pass
 
-	def buildToolsList(self, directory, purpose, method, is_private):
+	def buildToolsList(self, directory, purpose, method, is_private, private_user):
 		try:
 			extras = list()
 			name_list = list()
@@ -162,10 +162,10 @@ class BetterDatabase:
 					"INSERT INTO bettersploit_tools(path, types, purpose, lang) VALUES (%s,%s,%s,%s)",
 					(item, "Script", purpose, "Powershell"))
 			else:
-				if is_private is not True:
+				if is_private is not True and private_user is not None:
 					self.cursor.execute(f"INSERT INTO bettersploit_encrypted_tools(path, types, purpose, lang, key, nonce, cipher, tag, hash) VALUES (?,?,?,?)")
 				else:
-					self.cursor.execute(f"INSERT INTO {os.getlogin()}_encrypted_tools VALUES (path, types, purpose, lang, key, nonce, cipher, tag, hash) VALUES (?,?,?,?,?,?,?,?,?)")
+					self.cursor.execute(f"INSERT INTO {private_user}_encrypted_tools VALUES (path, types, purpose, lang, key, nonce, cipher, tag, hash) VALUES (?,?,?,?,?,?,?,?,?)")
 			self.connectionString.commit()
 		except psycopg2.OperationalError as e:
 			print(f"Error happened when populating the database..\n->{e}")
