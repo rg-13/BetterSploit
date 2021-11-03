@@ -14,11 +14,11 @@ class BetterDatabase:
 		self.customDirectory = f"{self.baseDirectory}/lib/custom/"
 		self.toolsDirectroy = f"{self.libDirectory}/tools"
 		self.genUserList = [ ]
-		self.dbaseHost = "localhost"
+		self.dbaseHost = "postgres"
 		self.dbasePort = 5432
 		self.dbaseUser = "postgres"
-		self.dbasePassword = ""
-		self.dbaseName = "bettersploit_main"
+		self.dbasePassword = "postgres"
+		self.dbaseName = "betterDB"
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False

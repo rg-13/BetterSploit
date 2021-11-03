@@ -12,6 +12,8 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
+    links:
+      - postgres
 #########################################################################
   postgres:
         image: postgres:12
@@ -23,7 +25,7 @@ services:
             max-size: 10m
             max-file: "3"
         ports:
-          - '5432:5432'
+          - '5433:5432'
         networks:
           - inbound
         volumes: 
