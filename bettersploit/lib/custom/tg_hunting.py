@@ -120,7 +120,6 @@ class TGHunting:
                                                             filter=ChannelParticipantsSearch('')))
                 return participants.users
                 self.json_store_participants(participants.users)
-
             else:
                 print('Channel not found!')
                 return None

