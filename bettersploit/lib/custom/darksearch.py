@@ -3,9 +3,12 @@
 
 import requests, sys, os, time, random, argparse, re, json, urllib3, threading, socket, ssl, urllib, urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, urllib.robotparser
 from bs4 import BeautifulSoup
+from random_user_agent.user_agent import UserAgent
+from random_user_agent.params import SoftwareName, OperatingSystem
 from urllib.parse import urlparse
 from urllib.parse import urljoin
 from urllib.parse import urlparse
+
 
 class darksearch:
     def __init__(self):
@@ -27,9 +30,13 @@ class darksearch:
         "Mozilla/5.0 (Windows NT 6.1; rv:27.3) Gecko/20130101 Firefox/27.3",
         "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:27.0) Gecko/20121011 Firefox/27.0"]
 
+    def download_user_agents(self):
+            url = "https://www.useragentstring.com/pages/useragentstring.php?name=all"
+
+
 
     def random_header(self):
-        return {'User-Agent': random.choice(self.headers)}
+        return user_agent_rotator.get_random_user_agent()
 
     def rotate_headers(self):
         self.headers.append(self.headers.pop(0))
