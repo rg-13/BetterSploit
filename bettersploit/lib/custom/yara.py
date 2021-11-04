@@ -66,7 +66,13 @@ class Yara:
 
     def yara_compiler(self):
         return yara.compiler
-    
+
+    def yara_rules(self):
+        return yara.rules   
+
+    def yara_match(self):
+        return yara.match
+        
     
 
     if __name__ == "__main__":
