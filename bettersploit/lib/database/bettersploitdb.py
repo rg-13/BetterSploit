@@ -16,9 +16,9 @@ class BetterDatabase:
 		self.dbaseHost = "localhost"
 		self.genUserList = []
 		self.dbasePort = 5432
-		self.dbaseUser = "bettersploit"
-		self.dbasePassword = ""
-		self.dbaseName = "bettersploit"
+		self.dbaseUser = os.environon.get("POSTGRES_USER")
+		self.dbasePassword = os.environon.get("POSTGRES_PASSWORD")
+		self.dbaseName = os.environon.get("POSTGRES_DB")
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False
@@ -222,6 +222,7 @@ class BetterDatabase:
 	def insertTimeruns(self, what):
 		if what is not None:
 			self.cursor.execute("INSERT INTO bettersploit_data(when_run) VALUES(%s)", (what,))
+			self.cursor.execute("COMMIT")
 		else:
 			raise KeyError("")
 
@@ -288,7 +289,7 @@ class BetterDatabase:
 		if user is not None:
 			self.cursor.execute(stmt, (user, function, target, outfile))
 		else:
-			user = os.getlogin()
-			self.cursor.execute(stmt, (user, function, target, outfile))
+			raise Exception(f"Value error, user cannot be null: {user}")
+		self.cursor.execute("COMMIT")
 
 
