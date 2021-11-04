@@ -4,6 +4,7 @@ create table if not exists bettersploit_sploits
         constraint bettersploit_sploits_pkey
             primary key,
     datetime   timestamp with time zone default CURRENT_TIMESTAMP not null,
+    successful_uses int NOT NULL DEFAULT '-',
     version    text,
     cve        text
         constraint bettersploit_sploits_cve_key
