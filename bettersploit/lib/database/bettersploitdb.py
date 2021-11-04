@@ -13,18 +13,12 @@ class BetterDatabase:
 		self.libDirectory = f"{self.baseDirectory}/lib/"
 		self.customDirectory = f"{self.baseDirectory}/lib/custom/"
 		self.toolsDirectroy = f"{self.libDirectory}/tools"
+		self.dbaseHost = "localhost"
 		self.genUserList = []
-		self.dbaseHost = "postgres"
 		self.dbasePort = 5432
-<<<<<<< Updated upstream
 		self.dbaseUser = "bettersploit"
 		self.dbasePassword = ""
 		self.dbaseName = "bettersploit"
-=======
-		self.dbaseUser = os.environ.get("POSTGRES_USER")
-		self.dbasePassword = os.environ.get("POSTGRES_PASSWORD")
-		self.dbaseName = os.environ.get("POSTGRES_DB")
->>>>>>> Stashed changes
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False
@@ -189,8 +183,40 @@ class BetterDatabase:
 				f"bettersploit_loot WHERE bettersploit_loot(host) = {host}")
 		return True
 
-	def insertLewts(self, lewt=str(), os=str(), cve_used=str(), best_guessed_cve=str(), are_we_persisting=bool(), what_did_we_take=str()):
-		print("coming soon.")
+	def insertLewts(self, lewt=str(), os=str(), cve_used=str(), best_guessed_cve=str(),
+					are_we_persisting=bool(), what_did_we_take=str(), target=str(), on_target_local_path=str()):
+		if os is not None:
+			if "windows" in os.lower():
+				print("Assuming arch is x86 and 64/32")
+			elif "arm" in os.lower():
+				print("Nice, owned IOT")
+			elif "nix" in os.lower():
+				print("1337 pwning nix")
+			else:
+				print("Nice job {}".format(os.lower()))
+			if lewt and cve_used and best_guessed_cve and are_we_persisting and what_did_we_take and target:
+				aa = self.cursor.execute("SELECT successful_uses FROM bettersploit_sploits WHERE cve = ?", (cve_used, ))
+				if aa > 5:
+					print("Appears to be a very popular exploit!\nUses: {}".format(aa))
+				aa += 1
+				self.cursor.execute(f"UPDATE bettersploit_sploits SET successful_uses = ? WHERE cve = ?",
+									(aa, cve_used,))
+				self.cursor.execute(f"INSERT INTO bettersploit_loot("
+									f"operating_system, host, local_path, type_of_loot, persist, best_cve, used_cve)"
+									f"VALUES(?, ?, ?, ?, ?, ?, ?)", (
+									os.lower(), target, on_target_local_path,
+									what_did_we_take, are_we_persisting, best_guessed_cve, cve_used
+									))
+				self.cursor.execute("COMMIT")
+				return True
+		else:
+			raise Exception(f"Missing needed information:\nloot:{lewt}\nos:{os}\ncve used: {cve_used}\n"
+							f"suggested cve:{best_guessed_cve}\npersist: {are_we_persisting}\n"
+							f"type of loot:{what_did_we_take}\ntarget: {target}\n"
+							f"path on target:{on_target_local_path}\n")
+
+
+
 
 	def insertTimeruns(self, what):
 		if what is not None:
