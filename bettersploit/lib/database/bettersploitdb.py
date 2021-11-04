@@ -13,12 +13,18 @@ class BetterDatabase:
 		self.libDirectory = f"{self.baseDirectory}/lib/"
 		self.customDirectory = f"{self.baseDirectory}/lib/custom/"
 		self.toolsDirectroy = f"{self.libDirectory}/tools"
-		self.dbaseHost = "localhost"
 		self.genUserList = []
+		self.dbaseHost = "postgres"
 		self.dbasePort = 5432
+<<<<<<< Updated upstream
 		self.dbaseUser = "bettersploit"
 		self.dbasePassword = ""
 		self.dbaseName = "bettersploit"
+=======
+		self.dbaseUser = os.environ.get("POSTGRES_USER")
+		self.dbasePassword = os.environ.get("POSTGRES_PASSWORD")
+		self.dbaseName = os.environ.get("POSTGRES_DB")
+>>>>>>> Stashed changes
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False
