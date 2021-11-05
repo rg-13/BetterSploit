@@ -9,7 +9,7 @@ from yara import yara
 from wrappers import Wrappers
 
 
-class CMDCenter():
+class CMDCenter(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
         #self.bettersploit = bettersploit
