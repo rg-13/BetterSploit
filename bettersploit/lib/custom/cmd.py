@@ -13,7 +13,7 @@ class CMDCenter():
     def __init__(self):
         cmd.Cmd.__init__(self)
         #self.bettersploit = bettersploit
-        self.config = ["%s=%s" % (k, v) for k, v in os.environ.items()]
+
         self.prompt = "bettersploit> "
         self.intro = "Welcome to bettersploit"
         self.doc_header = "Commands"
