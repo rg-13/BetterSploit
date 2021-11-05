@@ -52,6 +52,12 @@ class TShark:
     def save_file(self, file_name):
         self.cap.save_file(file_name)
 
+    def save_file_with_filter(self, file_name, filter):
+        self.cap.save_file(file_name, filter)
+    
+    def remote_save_file(self, file_name, remote_host, remote_port):
+        self.cap.remote_save_file(file_name, remote_host, remote_port)
+
     
 
 

