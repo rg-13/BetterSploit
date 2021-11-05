@@ -13,12 +13,12 @@ class BetterDatabase:
 		self.libDirectory = f"{self.baseDirectory}/lib/"
 		self.customDirectory = f"{self.baseDirectory}/lib/custom/"
 		self.toolsDirectroy = f"{self.libDirectory}/tools"
-		self.dbaseHost = "localhost"
+		self.dbaseHost = "postgres" #localhost for local postgres for docker
 		self.genUserList = []
 		self.dbasePort = 5432
-		self.dbaseUser = os.environon.get("POSTGRES_USER")
-		self.dbasePassword = os.environon.get("POSTGRES_PASSWORD")
-		self.dbaseName = os.environon.get("POSTGRES_DB")
+		self.dbaseUser = os.environ.get("POSTGRES_USER")
+		self.dbasePassword = os.environ.get("POSTGRES_PASSWORD")
+		self.dbaseName = os.environ.get("POSTGRES_DB")
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False

@@ -40,6 +40,7 @@ except AttributeError:
 
 Sploit = BetterDatabase()
 
+
 #this is super hacky, and very bad. this will add the methods in these directories into the database. still working.
 #@todo add a more streamlined method to add each method into the database, and not just what is limited in these directories.
 lolbas_bin = [
@@ -72,7 +73,14 @@ for dirpath, dirnames, filenames in os.walk('data/tools', topdown=True):
     for fname in filenames:
         files = os.path.join(dirpath, fname)
         purpose = dirpath.split(os.path.sep)[-1]
-        Sploit.buildToolsList(directory=str(files), purpose=purpose)
+        user_List = [ "j5", "notroot", "webcoderz", "test145" ]
+        for item in user_List:
+            try:
+                Sploit.createdb(item)
+                Sploit.buildToolsList(directory=str(files), purpose=purpose,method="build",is_private=True, private_user=item)
+            except KeyError as e:
+                print(e)
+        
 
 
 def pw_lists():
