@@ -1,6 +1,6 @@
 import cmd, sys
-from bettersploit import yaray
-from bettersploit.lib.custom import yara
+from yara import yara
+
 
 
 

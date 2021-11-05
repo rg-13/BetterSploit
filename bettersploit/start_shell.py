@@ -1,5 +1,5 @@
-from lib.custom.wrappers import Wrappers
+from lib.custom.cmd_shell import CMDCenter
 
 
 
-shell = Wrappers()
+shell = CMDCenter()
