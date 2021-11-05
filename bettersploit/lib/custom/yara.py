@@ -1,13 +1,16 @@
 from os import times
 import os
+from bettersploit.lib.custom.gitgrab import GitGrab
 import yara
-from bettersploit import gitgrabber
+from custom import *
+gitgrab = GitGrab.GitRepo()
+
 
 
 class Yara:
     def __init__(self, rule_path):
         self.rules = None
-        self.rules_repo = gitgrabber.GitRepo("https://github.com/advanced-threat-research/Yara-Rules.git")
+        self.rules_repo = GitRepo("https://github.com/advanced-threat-research/Yara-Rules.git")
         self.rules_path = "/custom/yara_rules/"
         
     def get_rules_from_repo(self):
@@ -15,13 +18,13 @@ class Yara:
         if dir.exists(self.rule_path):
             print("[+] Rules directory exists")
             print("[+] Getting rules from repo")
-            gitgrabber.GitRepo.clone(repo, self.rule_path)
+            GitRepo.clone(repo, self.rule_path)
         else:
                 print("[-] Rules directory does not exist")
                 print("[-] Creating rules directory")
                 os.mkdir(self.rule_path)
                 print("[+] Getting rules from repo")
-                gitgrabber.GitRepo.clone(repo, self.rule_path)
+                GitRepo.clone(repo, self.rule_path)
         for root, dirs, files in os.walk(self.rule_path):
             for file in files:
                 if file.endswith(".yar"):
@@ -140,7 +143,7 @@ class Yara:
         return yara.match
 
     def yara_match_rule(self):
-        return yara.
+        return yara,n
     
 
     if __name__ == "__main__":
