@@ -26,7 +26,7 @@ class CMDCenter():
         self.last_command_error = ""
         self.last_command_error_time = time.time()
         self.last_command_error_result = ""
-        self.tools = Wrappers
+        self.tools = Wrappers()
         self.nmap = tools.nmap
         self.sqlmap = tools.sqlmap
         self.wpscan = tools.wpscan
