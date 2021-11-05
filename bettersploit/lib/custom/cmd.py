@@ -4,7 +4,9 @@ import sys
 import time
 import glob
 import random
-from bettersploit.lib.custom import *
+from bettersploit.lib.custom.wrappers import Wrappers
+from yara import yara
+from custom import wrappers
 
 
 class CMDCenter(cmd.Cmd):
@@ -24,7 +26,7 @@ class CMDCenter(cmd.Cmd):
         self.last_command_error = ""
         self.last_command_error_time = time.time()
         self.last_command_error_result = ""
-        self.tools = bettersploit.Wrappers
+        self.tools = Wrappers
         self.nmap = tools.nmap
         self.sqlmap = tools.sqlmap
         self.wpscan = tools.wpscan
@@ -273,4 +275,27 @@ class CMDCenter(cmd.Cmd):
                     switch[scan_type](url)
                 else:
                     print("[!] Please enter a valid scan type")
-    
+            else:
+                print("[!] Please enter a URL")
+        else:
+            print("[!] Please wait until the previous command has finished")
+
+
+
+if __name__ == '__main__': 
+    CMDCenter().cmdloop()
+    #CMDCenter().do_wpscan("https://www.google.com")
+    #CMDCenter().do_nmap("https://www.google.com")
+    #CMDCenter().do_nmap("https://www.google.com", "scan_big")  
+    #CMDCenter().do_nmap("https://www.google.com", "scan_small")
+    #CMDCenter().do_nmap("https://www.google.com", "scan_full")
+    #CMDCenter().do_nmap("https://www.google.com", "scan_fast")
+    #CMDCenter().do_nmap("https://www.google.com", "scan_custom")
+    #CMDCenter().do_dirb("https://www.google.com")
+    #CMDCenter().do_dirb("https://www.google.com", "big")
+    #CMDCenter().do_dirb("https://www.google.com", "small")
+    #CMDCenter().do_joomscan("https://www.google.com")
+    #CMDCenter().do_gobuster("https://www.google.com")
+    #CMDCenter().do_harvest("https://www.google.com")
+    #CMDCenter().do_wpscan("https://www.google.com")
+

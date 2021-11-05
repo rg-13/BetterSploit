@@ -96,7 +96,8 @@ class Yara:
         return self.rules.rules
     
     def complie_rules(self):
-        self.rules.save(self.rule_path)
+        self.rules.compile()
+    
     
     def make_rule(self, rule_name, rule_content):
         self.rules.add_rule(rule_name, rule_content)
