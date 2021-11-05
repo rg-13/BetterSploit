@@ -284,7 +284,7 @@ class CMDCenter(cmd.Cmd):
 
 
 if __name__ == '__main__': 
-    CMDCenter().cmdloop("bettersploit")
+    CMDCenter().cmdloop()
     #CMDCenter().do_wpscan("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com", "scan_big")  
