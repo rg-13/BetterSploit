@@ -13,12 +13,13 @@ class BetterDatabase:
 		self.libDirectory = f"{self.baseDirectory}/lib/"
 		self.customDirectory = f"{self.baseDirectory}/lib/custom/"
 		self.toolsDirectroy = f"{self.libDirectory}/tools"
-		self.dbaseHost = "postgres" #localhost for local postgres for docker
+		self.dbaseHost = "localhost"
 		self.genUserList = []
 		self.dbasePort = 5432
-		self.dbaseUser = os.environ.get("POSTGRES_USER")
-		self.dbasePassword = os.environ.get("POSTGRES_PASSWORD")
-		self.dbaseName = os.environ.get("POSTGRES_DB")
+		self.dbaseUser = os.environon.get("POSTGRES_USER")
+		self.dbasePassword = os.environon.get("POSTGRES_PASSWORD")
+		self.dbaseName = os.environon.get("POSTGRES_DB")
+		self.inputUserList = os.environ.get("INPUT_USER_LIST")
 		self.checkDB = True
 		self.overrideCheckDB = False
 		self.overrideDBUser = False
@@ -32,37 +33,43 @@ class BetterDatabase:
 		)
 		self.cursor = self.connectionString.cursor()
 
-	def createdb(self, userlist):
+	def createdb(self):
 		pw = ''
 		digits = string.digits
 		asciilower = string.ascii_lowercase
 		asciiupper = string.ascii_uppercase
 		all = asciiupper + asciilower + digits
-		if userlist is not None:
-			for _ in range(15):
-				pw += secrets.choice(all)
-			self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS public.{userlist}_encrypted_tools(
-				id serial not null,
-				date_added timestamp default CURRENT_TIMESTAMP not null,
-				path text not null,
-				types text not null,
-				purpose text not null,
-				lang text not null,
-				key text not null unique,
-				nonce text not null unique,
-				cipher text not null unique,
-				tag text not null unique,
-				hash text not null unique
-				)
-				""")
-			if userlist != self.dbaseUser:
-				self.cursor.execute(f"CREATE ROLE {userlist} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
-				self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO {userlist}")
-				self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO notroot;")
-			self.genUserList.append(f"{userlist}:{pw}")
-			self.cursor.execute("COMMIT")
+		if os.path.isfile(self.inputUserList):
+			with open(self.inputUserList, "r") as inList:
+				for userlist in inList.readlines():
+					if userlist == "" or userlist is None:
+						os.remove(self.inputUserList)
+					for _ in range(15):
+						pw += secrets.choice(all)
+					userlist = userlist.strip("\n")
+					self.cursor.execute(f"""CREATE TABLE IF NOT EXISTS public.{userlist}_encrypted_tools(
+						id serial not null,
+						date_added timestamp default CURRENT_TIMESTAMP not null,
+						path text not null,
+						types text not null,
+						purpose text not null,
+						lang text not null,
+						key text not null unique,
+						nonce text not null unique,
+						cipher text not null unique,
+						tag text not null unique,
+						hash text not null unique
+						)
+						""")
+					if userlist != self.dbaseUser:
+						self.cursor.execute(f"CREATE ROLE {userlist} WITH LOGIN ENCRYPTED PASSWORD '{pw}'")
+						self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO {userlist}")
+						self.cursor.execute(f"GRANT ALL PRIVILEGES ON public.{userlist}_encrypted_tools TO notroot;")
+					self.genUserList.append(f"{userlist}:{pw}")
+					self.cursor.execute("COMMIT")
 		else:
-			raise KeyError(f"Cannot create with empty user: {userlist}")
+			raise KeyError(f"File did not exist, not generating any private spaces, using the default userspace. "
+			               f"inputUserList: {self.inputUserList}")
 		if len(self.genUserList) != 0:
 			return self.genUserList
 		else:
@@ -119,7 +126,7 @@ class BetterDatabase:
 									evaderpath, evaderfulldesc) VALUES (%s, %s, %s, %s, %s)''',
 									(evName, evDoes, evComms, evDescrip, evPath))
 							except (KeyError, psycopg2.IntegrityError, psycopg2.ProgrammingError,
-									yaml.composer.ComposerError) as e:
+							        yaml.composer.ComposerError) as e:
 								print(f"->\n{e}")
 								pass
 
@@ -172,11 +179,11 @@ class BetterDatabase:
 
 	def query_Sploits(self, tech=str(), version=str(), host=str()):
 		sel_stmt = "SELECT bettersploit_sploits(cve) FROM bettersploit_sploits WHERE bettersploit_sploits(tech) = (?) " \
-				   "" \
-				   "AND bettersploit_sploits(version) = (?)"
+		           "" \
+		           "AND bettersploit_sploits(version) = (?)"
 		for row in self.cursor.execute(sel_stmt):
 			self.cursor.execute("UPDATE bettersploit_loot(best_cve) WHERE bettersploit_loot(host) = (?)",
-								(row[ 1 ], host))
+			                    (row[ 1 ], host))
 			print(f"Possible best exploit to use would be: {row[ 1 ]}\n For Host: {host}")
 			print(
 				f"There is an entry in the database located at: SELECT bettersploit_loot(best_cve) FROM "
@@ -184,7 +191,7 @@ class BetterDatabase:
 		return True
 
 	def insertLewts(self, lewt, os, cve_used, best_guessed_cve,
-					are_we_persisting, what_did_we_take, target, on_target_local_path):
+	                are_we_persisting, what_did_we_take, target, on_target_local_path):
 		if os is not None:
 			if "windows" in os.lower():
 				print("Assuming arch is x86 and 64/32")
@@ -203,21 +210,21 @@ class BetterDatabase:
 						print("Appears to be a very popular exploit!\nUses: {}".format(aa))
 				c = aa[0] + 1
 				self.cursor.execute(f"UPDATE bettersploit_sploits SET successful_uses = %s WHERE cve = %s",
-									(c, cve_used,))
+				                    (c, cve_used,))
 				self.cursor.execute(f"INSERT INTO bettersploit_loots("
-									f"operating_system, host, local_path, type_of_loot, persist, best_cve, used_cve)"
-									f"VALUES(%s, %s, %s, %s, %s, %s, %s)", (
-									os.lower(), target, on_target_local_path,
-									what_did_we_take, are_we_persisting, best_guessed_cve, cve_used,
-									))
+				                    f"operating_system, host, local_path, type_of_loot, persist, best_cve, used_cve)"
+				                    f"VALUES(%s, %s, %s, %s, %s, %s, %s)", (
+					                    os.lower(), target, on_target_local_path,
+					                    what_did_we_take, are_we_persisting, best_guessed_cve, cve_used,
+				                    ))
 				self.cursor.execute("COMMIT")
 				return [os.lower(), target, on_target_local_path,
-						what_did_we_take, are_we_persisting, best_guessed_cve, cve_used]
+				        what_did_we_take, are_we_persisting, best_guessed_cve, cve_used]
 		else:
 			raise Exception(f"Missing needed information:\nloot:{lewt}\nos:{os}\ncve used: {cve_used}\n"
-							f"suggested cve:{best_guessed_cve}\npersist: {are_we_persisting}\n"
-							f"type of loot:{what_did_we_take}\ntarget: {target}\n"
-							f"path on target:{on_target_local_path}\n")
+			                f"suggested cve:{best_guessed_cve}\npersist: {are_we_persisting}\n"
+			                f"type of loot:{what_did_we_take}\ntarget: {target}\n"
+			                f"path on target:{on_target_local_path}\n")
 
 	def insertTimeruns(self, what):
 		if what is not None:
@@ -239,11 +246,11 @@ class BetterDatabase:
 
 	def queryTools(self, lang, method=''):
 		cprint("[ !! ] In order to add to these modules, simply add your new module into the ./data/scripts folder "
-			   "and re-run the program. [ !! ]", "red", attrs=[ "bold" ])
+		       "and re-run the program. [ !! ]", "red", attrs=[ "bold" ])
 		modules = "[ + ] {} modules:\n".format(lang)
 		cprint(modules, "green", attrs=[ "blink" ])
 		sel_STMT = "SELECT lang, path, purpose, types from bettersploit_tools where bettersploit_tools.lang LIKE %s " \
-				   "ESCAPE ''"
+		           "ESCAPE ''"
 		choice_Select = """SELECT * FROM bettersploit_tools WHERE bettersploit_tools.path = %s """
 		self.cursor.execute(sel_STMT, (lang,))
 		choice_dict = {}
@@ -251,10 +258,10 @@ class BetterDatabase:
 		for row in self.cursor.fetchall():
 			choice_dict.update({i: row[ 2 ]})
 			cprint("|------------------------------------------------------------------------------|\n", "green",
-				   attrs=[ "bold" ])
+			       attrs=[ "bold" ])
 			cprint(f"{i}->{row[ 1 ]}  |  {row[ 3 ]}  |  {row[ 2 ]}  |  {row[ 0 ]}", "blue", attrs=[ "bold" ])
 			cprint("|______________________________________________________________________________|\n", "green",
-				   attrs=[ "bold" ])
+			       attrs=[ "bold" ])
 			i += 1
 		cprint("[ !! ] Press enter to return to the main menu. [ !! ]", "red", attrs=[ "bold", "blink" ])
 		choice = int(input("[ ? ] Please select your choice. [ ? ]\n->"))
@@ -263,7 +270,7 @@ class BetterDatabase:
 
 	def modCount(self):
 		self.cursor.execute("SELECT COUNT(*) FROM (select lang from bettersploit_tools WHERE lang = 'python') AS "
-							"TEMP;")
+		                    "TEMP;")
 		python = self.cursor.fetchone()
 		self.cursor.execute("SELECT COUNT(*) FROM (select lang from bettersploit_tools WHERE lang = 'text') AS TEMP;")
 		text = self.cursor.fetchone()
@@ -280,12 +287,12 @@ class BetterDatabase:
 			"SELECT COUNT(*) FROM (select purpose from bettersploit_tools WHERE purpose = 'general') AS TEMP;")
 		gener = self.cursor.fetchone()
 		cprint(f"| Total Python Mods: {python[ 0 ]} | Total Lists: {text[ 0 ]} | Total persistence mods: {persi[ 0 ]} "
-			   f"| Total Powershell Mods: {psh[ 0 ]} | Total Recon Mods: {recon[ 0 ]} | Total general Items: {gener[0]}","green",
-			   attrs=[ "bold" ])
+		       f"| Total Powershell Mods: {psh[ 0 ]} | Total Recon Mods: {recon[ 0 ]} | Total general Items: {gener[0]}","green",
+		       attrs=[ "bold" ])
 
 	def rollingLog(self, user, function, target, outfile):
 		stmt = "INSERT INTO bettersploit_log(bettersploit_user, bettersploit_function_used, target, where_is_result) " \
-			   "VALUES(%s, %s, %s, %s)"
+		       "VALUES(%s, %s, %s, %s)"
 		if user is not None:
 			self.cursor.execute(stmt, (user, function, target, outfile))
 		else:
