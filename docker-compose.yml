@@ -38,4 +38,4 @@ services:
 networks:
       inbound:
 volumes:
-  postgres-data:
+      postgres-data:
