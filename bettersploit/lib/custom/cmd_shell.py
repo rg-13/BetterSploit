@@ -5,7 +5,8 @@ import time
 import glob
 import random
 import random
-from yara import yara
+from yara_cmd import *
+from tshark_shell import TsharkShell
 from wrappers import Wrappers
 
 ascii_art=[
@@ -93,20 +94,17 @@ class CMDCenter(cmd.Cmd):
         self.subjack = self.tools.subjack
         self.wpscan = self.tools.wpscan
         self.amass = self.tools.amass
-        self.massdns = self.tools.massdns
-        self.massdns_big = self.tools.massdns_big
-        self.massdns_small = self.tools.massdns_small
-        self.wayback = self.tools.waybackurls
         self.dirb = self.tools.dirb
-        #self.dirb_big = self.tools.dirb_big
-        #self.dirb_small = self.tools.dirb_small
+        self.dirb_big = self.tools.dirb_big
+        self.dirb_small = self.tools.dirb_small
         self.dirsearch = self.tools.dirsearch
         self.jexboss = self.tools.jexboss
         self.joomscan = self.tools.joomscan
         self.gobuster = self.tools.gobuster
-        self.wpscan = self.tools.wpscan
-        #self.harvest = self.tools.harvester
-            
+        self.cmsmap = self.tools.cmsmap
+        self.harvest = self.tools.theharvester
+        self.yara = YaraShell()
+        self.tshell = TsharkShell()
         #//TO ADD:
         #self.golismero = tools.golismero
 
@@ -150,16 +148,22 @@ class CMDCenter(cmd.Cmd):
         return self.config
 
 
-
-    def do_wpscan(self, url):
-        "wpscan <url>"
+    def do_yara(self):
+        "opens YARA interactive shell"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
-            if url:
-                self.wpscan(url)
-            else:
-                print("[!] Please enter a URL")
+            yara_shell = YaraShell()
+            yara_shell.cmdloop()
+
+    
+    def do_wireshark(self):
+        "opens wireshark(tshark) interactive shell"
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
+        else:
+            tshark_shell = TsharkShell()
+            tshark_shell.cmdloop()              
 
     def do_dnsrecon(self, domain):
         "dnsrecon <domain>"
@@ -241,34 +245,6 @@ class CMDCenter(cmd.Cmd):
             else:
                 print("[!] Please enter a domain")
 
-    def do_massdns(self, domain, type=None):
-        "massdns <domain> [type]"
-        if self.still_running():
-            print("[!] Please wait until the previous command has finished")
-        else:
-            if domain:
-                switch = {
-                    'big': self.massdns_big,
-                    'small': self.massdns_small
-                }
-                if type:
-                    switch[type](domain)
-                else:
-                    print("[!] Please enter a domain")
-            else:
-                print("[!] Please enter a domain")
-                
-    def do_wayback(self, domain):
-        "wayback <domain>"
-        if self.still_running():
-            print("[!] Please wait until the previous command has finished")
-        else:
-            if domain:
-                self.wayback(domain)
-            else:
-                print("[!] Please enter a domain")
-
-
     def do_dirb(self, url, type=None):
         "dirb <url> [type]"
         if self.still_running():
@@ -279,12 +255,14 @@ class CMDCenter(cmd.Cmd):
                     'big': self.dirb_big,
                     'small': self.dirb_small
                 }
-                if type:
-                    switch[type](url)
+                if type == "big":
+                    self.tools.dirb_big(url)
+                elif type == "small":
+                    self.tools.dirb_small(url)
+                elif type == "common":
+                    self.tools.dirb_common(url)
                 else:
-                    print("[!] Please enter a URL")
-            else:
-                print("[!] Please enter a URL")
+                    print("[!] Please enter a type")
 
     def do_jexboss(self, url):
         "jexboss <url>"
@@ -322,11 +300,11 @@ class CMDCenter(cmd.Cmd):
             else:
                 print("[!] Please enter a URL")
     
-    def do_wpscan(self, url):
-        "wpscan <url>"
+    def do_cmsmap(self, url):
+        "cmsmap <url>"
         if self.still_running():
             if url:
-                self.wpscan(url)
+                self.cmsmap(url)
             else:
                 print("[!] Please enter a URL")
     
@@ -357,7 +335,6 @@ class CMDCenter(cmd.Cmd):
 
 if __name__ == '__main__': 
     CMDCenter().cmdloop()
-    #CMDCenter().do_wpscan("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com", "scan_big")  
     #CMDCenter().do_nmap("https://www.google.com", "scan_small")

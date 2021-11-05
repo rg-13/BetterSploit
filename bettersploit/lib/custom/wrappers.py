@@ -6,6 +6,7 @@ import random
 import string
 import subprocess
 from subprocess import Popen, PIPE
+import pandas as pd
 
 #default locations
 sqldir="/usr/share/sqlmap"
@@ -15,21 +16,13 @@ comdir="/usr/share/commix"
 subdir="/usr/share/sublist3r"
 sho="/usr/local/bin/shodan"
 jexboss="/usr/share/jexboss"
-wpscan="/usr/share/wpscan/wpscan.rb"
-metasploit="/usr/share/metasploit-framework"
+cmsmap = "/usr/share/cmsmap"
 nuclei="/usr/share/nuclei"
 nuclei_templates="/usr/share/nuclei/templates"
 nuclei_modules="/usr/share/nuclei/modules"
-nuclei_plugins="/usr/share/nuclei/plugins"
 xsstrike="/usr/share/xsstrike"
 httpx="/usr/share/httpx"
 dirsearch="/usr/share/dirb"
-dirsearch_db="/usr/share/dirb/wordlists/common.txt"
-dirsearch_db_ext="/usr/share/dirb/wordlists/common_ext.txt"
-dirsearch_db_big="/usr/share/dirb/wordlists/big.txt"
-dirsearch_db_big_ext="/usr/share/dirb/wordlists/big_ext.txt"
-dirsearch_db_big_all="/usr/share/dirb/wordlists/big_all.txt"
-dirsearch_db_big_all_ext="/usr/share/dirb/wordlists/big_all_ext.txt"
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 class colors:
     HEADER = '\033[95m'
@@ -49,7 +42,7 @@ class Wrappers:
         self.gobuster="gobuster"
         self.httpx="httpx"
         self.subjack = "subjack"
-        self.waybackurls = "waybackurls"
+        self.waybackhosts = "waybackhosts"
         self.whatweb = "whatweb"
         self.wpscan = wpscan
         self.amass = "amass"
@@ -58,6 +51,10 @@ class Wrappers:
         self.dirsearch = dirsearch
         self.shodan = sho
         self.dirb = "dirb"
+        self.dirb_big = "dirb_big"
+        self.dirb_small = "dirb_small"
+        self.dirb_common = "dirb_common"
+        self.cmsmap = "cmsmap"
         self.commix = "commix"
         self.nmap = "nmap"
         self.nuclei = "nuclei"
@@ -91,12 +88,6 @@ class Wrappers:
         self.nuclei_modules = nuclei_modules
         self.nuclei_plugins = nuclei_plugins
         self.dirsearch = dirsearch
-        self.dirsearch_db = dirsearch_db
-        self.dirsearch_db_ext = dirsearch_db_ext
-        self.dirsearch_db_big = dirsearch_db_big
-        self.dirsearch_db_big_ext = dirsearch_db_big_ext
-        self.dirsearch_db_big_all = dirsearch_db_big_all
-        self.dirsearch_db_big_all_ext = dirsearch_db_big_all_ext
         self.host = ""
         self.nmap_options = ''
         self.nmap_ports = ''
@@ -179,24 +170,7 @@ class Wrappers:
         self.httpx_output_file_name = ''
         self.httpx_output_file_ext = ''
         self.httpx_output_file_path =  ''
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def dirsearch_db_big(self):
-        self.dirsearch_db_big_ext = self.dirsearch_db_big_ext + '\n' + self.dirsearch_db_big_ext_default
-        self.dirsearch_db_big_all = self.dirsearch_db_big_all + '\n' + self.dirsearch_db_big_all_default
-        self.dirsearch_db_big_all_ext = self.dirsearch_db_big_all_ext + '\n' + self.dirsearch_db_big_all_ext_default
-        self.dirsearch_db_small_ext = self.dirsearch_db_small_ext + '\n' + self.dirsearch_db_small_ext_default
-        self.dirsearch_db_small_all = self.dirsearch_db_small_all + '\n' + self.dirsearch_db_small_all_default
-        self.dirsearch_db_small_all_ext = self.dirsearch_db_small_all_ext + '\n' + self.dirsearch_db_small_all_ext_default
-
-    def dirsearch_db_small(self):
-        self.dirsearch_db_big_ext = self.dirsearch_db_big_ext + '\n' + self.dirsearch_db_small_ext_default
-        self.dirsearch_db_big_all = self.dirsearch_db_big_all + '\n' + self.dirsearch_db_small_all_default
-        self.dirsearch_db_big_all_ext = self.dirsearch_db_big_all_ext + '\n' + self.dirsearch_db_small_all_ext_default
-        self.dirsearch_db_small_ext = self.dirsearch_db_small_ext + '\n' + self.dirsearch_db_small_ext_default
-        self.dirsearch_db_small_all = self.dirsearch_db_small_all + '\n' + self.dirsearch_db_small_all_default
-        self.dirsearch_db_small_all_ext = self.dirsearch_db_small_all_ext + '\n' + self.dirsearch_db_small_all_ext_default
-    
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def host_set(self, host):
@@ -207,37 +181,59 @@ class Wrappers:
         else:
             print("[+] Host is set to: " + self.host)
     
-    def set_url(self, url):
-        self.url = url
-        if self.url == "":
-            print("[!] URL is empty")
+    def set_host(self, host):
+        self.host = host
+        if self.host == "":
+            print("[!] host is empty")
             sys.exit()
         else:
-            print("[+] URL is set to: " + self.url)
+            print("[+] host is set to: " + self.host)
+
+    def load_dirb_lists(self, list_type=None):
+        if list_type == None:
+            print("[!] No list type specified")
+            sys.exit()
+        else:
+            switch = {
+                self.dirb_big: "https://raw.githubusercontent.com/v0re/dirb/master/wordlists/big.txt",
+                self.dirb_small: "https://raw.githubusercontent.com/v0re/dirb/master/wordlists/small.txt",
+                self.dirb_common: "https://raw.githubusercontent.com/v0re/dirb/master/wordlists/common.txt",
+
+            }
+            self.dirb_lists = switch.get(list_type)
+            if self.dirb_lists == "dirb_big":
+                pd.read_csv(self.dirb_big,header=None,encoding = "ISO-8859-1")[0].to_list()
+            elif self.dirb_lists == "dirb_small":
+                pd.read_csv(self.dirb_small,header=None,encoding = "ISO-8859-1")[0].to_list()
+            elif self.dirb_lists == "dirb_common":
+                pd.read_csv(self.dirb_common,header=None,encoding = "ISO-8859-1")[0].to_list()
+            else:
+                print("[!] No list type specified")
+                sys.exit()
+            print("[+] Loaded " + self.dirb_lists)
 #======================
 #Wrappers:
 #======================
 
     def sqlmap(self, host):
         self.host_set(host)
-        self.sqlmap_options = '-u ' + self.url + " --batch --random-agent --threads 10 --level 3 --risk 3 --timeout 10 --smart --dbs --tamper=url --dbs --dbms=mysql --dbms=mssql --dbms=oracle --dbms=postgres --dbms=sqlite --dbms=sqlserver --dbs --tables --columns --forms --dump --dbs --sql-query --tor --tor-type=socks5 --tor-port=9050 --tor-control-port=9051"
+        self.sqlmap_options = '-u ' + self.host + " --batch --random-agent --threads 10 --level 3 --risk 3 --timeout 10 --smart --dbs --tamper=host --dbs --dbms=mysql --dbms=mssql --dbms=oracle --dbms=postgres --dbms=sqlite --dbms=sqlserver --dbs --tables --columns --forms --dump --dbs --sql-query --tor --tor-type=socks5 --tor-port=9050 --tor-control-port=9051"
         self.sqlmap_output = subprocess.Popen(['sqlmap', self.sqlmap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def fimap(self, host):
         self.host_set(host)
-        self.fimap_options = '-u ' + self.url + ' -t 10 -m 10 -o ' + self.host + '_fimap.txt'
+        self.fimap_options = '-u ' + self.host + ' -t 10 -m 10 -o ' + self.host + '_fimap.txt'
         self.fimap_output = subprocess.Popen(['fimap', self.fimap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
          
 
-
     def joomscan(self, host):
         self.host_set(host)
-        self.joomscan_options = '-u ' + self.url + ' -t 10 -m 10 -o ' + self.host + '_joomscan.txt'
+        self.joomscan_options = '-u ' + self.host + ' -t 10 -m 10 -o ' + self.host + '_joomscan.txt'
         self.joomscan_output = subprocess.Popen(['joomscan', self.joomscan_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def jexboss(self, host):
         self.host_set(host)
-        self.jexboss_options = '-u ' + self.url + ' -t 10 -m 10 -o ' + self.host + '_jexboss.txt'
+        self.jexboss_options = '-u ' + self.host + ' -t 10 -m 10 -o ' + self.host + '_jexboss.txt'
         self.jexboss_output = subprocess.Popen(['jexboss', self.jexboss_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def sublist3r(self, host):
@@ -247,32 +243,45 @@ class Wrappers:
 
     def nuclei(self, host):
         self.host_set(host)
-        self.nuclei_options = '-t ' + self.nuclei_threads + ' -v ' + self.nuclei_verbosity + ' -e ' + self.nuclei_engine + ' -m ' + self.nuclei_modules + ' -o ' + self.host + '_nuclei.txt'
+        self.nuclei_options = '-t ' + self.nuclei_threads + ' -v ' + self.nuclei_verbosity + ' -m ' + self.nuclei_modules + ' -o ' + self.host + '_nuclei.txt'
         self.nuclei_output = subprocess.Popen(['nuclei', self.nuclei_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
-    def wpscan(self, host):
+    def cmsmap(self, host):
         self.host_set(host)
-        self.wpscan_options = '-u ' + self.url + ' --batch --disable-tls-checks --disable-tls-fingerprint --disable-color --log ' + self.host + '_wpscan.txt'
-        self.wpscan_output = subprocess.Popen(['wpscan', self.wpscan_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.cmsmap_options = self.host + ' -F -o ' + self.host + '_cmsmap.txt'
+        self.cmsmap_output = subprocess.Popen(['cmsmap', self.cmsmap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)  
 
     def dirsearch(self, host):
         self.host_set(host)
-        self.dirsearch_options = '-u ' + self.url + ' -w ' + self.dirsearch_db_big_ext + ' -x ' + self.dirsearch_db_big_all + ' -x ' + self.dirsearch_db_big_all_ext + ' -x ' + self.dirsearch_db_small_ext + ' -x ' + self.dirsearch_db_small_all + ' -x ' + self.dirsearch_db_small_all_ext + ' -o ' + self.host + '_dirsearch.txt'
+        self.dirsearch_options = '-u ' + self.host + ' -w ' + self.dirb_common
         self.dirsearch_output = subprocess.Popen(['dirsearch', self.dirsearch_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def httpx(self, host):
         self.host_set(host)
-        self.httpx_options = '-u ' + self.url + ' -o ' + self.host + '_httpx.txt'
+        self.httpx_options = '-u ' + self.host + ' -o ' + self.host + '_httpx.txt'
         self.httpx_output = subprocess.Popen(['httpx', self.httpx_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
-    def dirb(self, host):
+    def dirb(self, host, type='big'):
         self.host_set(host)
-        self.dirb_options = '-u ' + self.url + ' -w ' + self.dirb_db_big_ext + ' -w ' + self.dirb_db_big_all + ' -w ' + self.dirb_db_big_all_ext + ' -w ' + self.dirb_db_small_ext + ' -w ' + self.dirb_db_small_all + ' -w ' + self.dirb_db_small_all_ext + ' -o ' + self.host + '_dirb.txt'
+        switch = {
+            'big': self.dirb_big,
+            'small': self.dirb_small,
+            'common': self.dirb_common
+        }
+        self.dirb_options = self.host + ' -w ' + switch.get(type) + ' -o ' + self.host + '_dirb.txt'
         self.dirb_output = subprocess.Popen(['dirb', self.dirb_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+
+        if type == 'big':
+            self.dirb_options = self.host + ' -w ' + self.dirb_db_big + ' -o ' + self.host + '_dirb_big.txt'
+        elif type == 'small':
+            self.dirb_options = self.host + ' -w ' + self.dirb_db_small + ' -o ' + self.host + '_dirb_small.txt'
+        self.dirb_output = subprocess.Popen(['dirb', self.dirb_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
 
     def gobuster(self, host):
         self.host_set(host)
-        self.gobuster_options = '-u ' + self.url + ' -w ' + self.gobuster_db_big_ext + ' -w ' + self.gobuster_db_big_all + ' -w ' + self.gobuster_db_big_all_ext + ' -w ' + self.gobuster_db_small_ext + ' -w ' + self.gobuster_db_small_all + ' -w ' + self.gobuster_db_small_all_ext + ' -o ' + self.host + '_gobuster.txt'
+        self.gobuster_options = '-e -u ' + self.host + ' -w ' + self.dib_common
         self.gobuster_output = subprocess.Popen(['gobuster', self.gobuster_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def whatweb(self, host):
@@ -282,7 +291,7 @@ class Wrappers:
 
     def assetfinder(self, host):
         self.host_set(host)
-        self.assetfinder_options = '-subs-only -subs-url ' + self.url + ' -subs-list ' + self.assetfinder_db_big_ext + ' -subs-list ' + self.assetfinder_db_big_all + ' -subs-list ' + self.assetfinder_db_big_all_ext + ' -subs-list ' + self.assetfinder_db_small_ext + ' -subs-list ' + self.assetfinder_db_small_all + ' -subs-list ' + self.assetfinder_db_small_all_ext + ' -o ' + self.host + '_assetfinder.txt'
+        self.assetfinder_options = '-subs-only -subs-host ' + self.host + ' -subs-list ' + self.assetfinder_db_big_ext + ' -subs-list ' + self.assetfinder_db_big_all + ' -subs-list ' + self.assetfinder_db_big_all_ext + ' -subs-list ' + self.assetfinder_db_small_ext + ' -subs-list ' + self.assetfinder_db_small_all + ' -subs-list ' + self.assetfinder_db_small_all_ext + ' -o ' + self.host + '_assetfinder.txt'
         self.assetfinder_output = subprocess.Popen(['assetfinder', self.assetfinder_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def subfinder(self, host):
@@ -290,10 +299,6 @@ class Wrappers:
         self.subfinder_options = '-d ' + self.host + ' -o ' + self.host + '_subfinder.txt'
         self.subfinder_output = subprocess.Popen(['subfinder', self.subfinder_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
-    def waybackurls(self, host):
-        self.host_set(host)
-        self.waybackurls_options = '-d ' + self.host + ' -o ' + self.host + '_waybackurls.txt'
-        self.waybackurls_output = subprocess.Popen(['waybackurls', self.waybackurls_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     def theharvester(self, host):
         self.host_set(host)
@@ -312,7 +317,7 @@ class Wrappers:
 
     def dnsrecon(self, host):
         self.host_set(host)
-        self.dnsrecon_options = '-d ' + self.host + ' -o ' + self.host + '_dnsrecon.txt'
+        self.dnsrecon_options = '-d ' + self.host
         self.dnsrecon_output = subprocess.Popen(['dnsrecon', self.dnsrecon_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def nikto(self, host):
@@ -320,53 +325,28 @@ class Wrappers:
         self.nikto_options = '-host ' + self.host + ' -Format htm -output ' + self.host + '_nikto.txt'
         self.nikto_output = subprocess.Popen(['nikto', self.nikto_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+
     def nmap(self, host):
         self.host_set(host)
-        self.nmap_options = '-sV -Pn -p- -oN ' + self.host + '_nmap.txt ' + self.host
+        self.nmap_options = '-sV -Pn -p-' + self.host
         self.nmap_output = subprocess.Popen(['nmap', self.nmap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     def httprobe(self, host):
         self.host_set(host)
         self.httprobe_options = '-c -t 100 -p ' + self.host + '_httprobe.txt ' + self.host
         self.httprobe_output = subprocess.Popen(['httprobe', self.httprobe_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    def massdns(self, host):
-        self.host_set(host)
-        self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -r ' + self.massdns_db_big_all + ' -r ' + self.massdns_db_big_all_ext + ' -r ' + self.massdns_db_small_ext + ' -r ' + self.massdns_db_small_all + ' -r ' + self.massdns_db_small_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    def massdns_big(self, host):
-        self.host_set(host)
-        self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -r ' + self.massdns_db_big_all + ' -r ' + self.massdns_db_big_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-    def massdns_small(self, host):
-        self.host_set(host)
-        self.massdns_options = '-r ' + self.massdns_db_small_ext + ' -r ' + self.massdns_db_small_all + ' -r ' + self.massdns_db_small_all_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
-    def massdns_big_ext(self, host):
-        self.host_set(host)
-        self.massdns_options = '-r ' + self.massdns_db_big_ext + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
-    def massdns_big_all(self, host):
-        self.host_set(host)
-        self.massdns_options = '-r ' + self.massdns_db_big_all + ' -t A -o S -w ' + self.host + '_massdns.txt ' + self.host
-        self.massdns_output = subprocess.Popen(['massdns', self.massdns_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #================
     
 #OVERKILL XD
 
     def recon_all(self, host):
         self.httprobe(host)
-        self.massdns(host)
         self.nmap(host)
         self.sublist3r(host)
         self.dnsrecon(host)
         self.amass(host)
         self.theharvester(host)
-        self.waybackurls(host)
+        self.waybackhosts(host)
         self.subfinder(host)
         self.nuclei(host)
         self.nikto(host)
