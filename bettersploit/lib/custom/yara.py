@@ -1,6 +1,6 @@
 from os import times
 import os
-from bettersploit.lib.custom.gitgrab import GitGrab
+from gitgrab import GitGrab
 import yara
 from gitgrab import GitGrab
 

@@ -10,9 +10,10 @@ from wrappers import Wrappers
 
 
 class CMDCenter():
-    def __init__(self, bettersploit):
+    def __init__(self):
         cmd.Cmd.__init__(self)
-        self.bettersploit = bettersploit
+        #self.bettersploit = bettersploit
+        self.config = ["%s=%s" % (k, v) for k, v in os.environ.items()]
         self.prompt = "bettersploit> "
         self.intro = "Welcome to bettersploit"
         self.doc_header = "Commands"
@@ -282,8 +283,8 @@ class CMDCenter():
 
 
 
-#if __name__ == '__main__': 
-    #CMDCenter().cmdloop()
+if __name__ == '__main__': 
+    CMDCenter().cmdloop("bettersploit")
     #CMDCenter().do_wpscan("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com", "scan_big")  
