@@ -4,12 +4,12 @@ import sys
 import time
 import glob
 import random
-from bettersploit.lib.custom.wrappers import Wrappers
+
 from yara import yara
-from custom import wrappers
+from wrappers import Wrappers
 
 
-class CMDCenter(cmd.Cmd):
+class CMDCenter():
     def __init__(self, bettersploit):
         cmd.Cmd.__init__(self)
         self.bettersploit = bettersploit
@@ -282,8 +282,8 @@ class CMDCenter(cmd.Cmd):
 
 
 
-if __name__ == '__main__': 
-    CMDCenter().cmdloop()
+#if __name__ == '__main__': 
+    #CMDCenter().cmdloop()
     #CMDCenter().do_wpscan("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com")
     #CMDCenter().do_nmap("https://www.google.com", "scan_big")  

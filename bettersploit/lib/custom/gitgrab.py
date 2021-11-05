@@ -38,10 +38,10 @@ class GitGrab:
         self.keywords = [keyword.strip() for keyword in keywords.split(',')]
         query = '+'.join(keywords) + '+in:name,description,readme'
         results = g.search_repositories(query, sort='stars', order='desc')
-        return results
+        #return results
 
         for result in results:
-           self.save2json(result.name, json_result)
+            self.save2json(result.name, json_result)
 
             print('Repo name: {}'.format(repo_name))
             print('Repo description: {}'.format(repo_description))

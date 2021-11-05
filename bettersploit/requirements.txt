@@ -15,3 +15,4 @@ dnsdumpster
 pefile
 pymetasploit3
 pyyaml
+PyGithub

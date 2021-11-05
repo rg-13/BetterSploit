@@ -1,7 +1,7 @@
 from os import times
 import os
 import yara
-from bettersploit import gitgrabber
+from gitgrab import GitGrab
 
 
 class Yara:
@@ -139,11 +139,9 @@ class Yara:
     def yara_match(self):
         return yara.match
 
-    def yara_match_rule(self):
-        return yara.
-    
 
-    if __name__ == "__main__":
+
+    #if __name__ == "__main__":
 
 
         # Example usage

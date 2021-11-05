@@ -12,4 +12,4 @@ COPY ./lib /lib
 COPY ./Albert.py /Albert.py
 
 
-CMD ["python3", "start_shell.py"]
+CMD ["python3", "/lib/custom/cmd.py"]
