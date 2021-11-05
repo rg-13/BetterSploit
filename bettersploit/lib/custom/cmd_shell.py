@@ -8,6 +8,7 @@ import random
 from yara_cmd import *
 from tshark_shell import TsharkShell
 from wrappers import Wrappers
+from nmapper import nmap_scan
 
 ascii_art=[
 '''
@@ -82,7 +83,7 @@ class CMDCenter(cmd.Cmd):
         self.last_command_error_time = time.time()
         self.last_command_error_result = ""
         self.tools = Wrappers()
-        self.nmap = self.tools.nmap
+        self.nmap = self.nmap()
         self.sqlmap = self.tools.sqlmap
         self.wpscan = self.tools.wpscan
         self.dnsrecon = self.tools.dnsrecon
@@ -312,26 +313,9 @@ class CMDCenter(cmd.Cmd):
         "nmap <url> [type]"
         if self.still_running():
             if url:
-                switch = {
-                    "scan": self.nmap_scan,
-                    "scan_big": self.nmap_scan_big,
-                    "scan_small": self.nmap_scan_small,
-                    "scan_full": self.nmap_scan_full,
-                    "scan_fast": self.nmap_scan_fast,
-                                        "scan_custom": self.nmap_scan_custom
-                }
-                if scan_type == None:
-                    self.nmap_scan(url)
-                elif scan_type in switch:
-                    switch[scan_type](url)
-                else:
-                    print("[!] Please enter a valid scan type")
+                self.nmap.nmap_scan(url, scan_type)
             else:
                 print("[!] Please enter a URL")
-        else:
-            print("[!] Please wait until the previous command has finished")
-
-
 
 if __name__ == '__main__': 
     CMDCenter().cmdloop()

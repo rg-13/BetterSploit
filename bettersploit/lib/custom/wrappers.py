@@ -325,12 +325,6 @@ class Wrappers:
         self.nikto_options = '-host ' + self.host + ' -Format htm -output ' + self.host + '_nikto.txt'
         self.nikto_output = subprocess.Popen(['nikto', self.nikto_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-
-    def nmap(self, host):
-        self.host_set(host)
-        self.nmap_options = '-sV -Pn -p-' + self.host
-        self.nmap_output = subprocess.Popen(['nmap', self.nmap_options], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
     def httprobe(self, host):
         self.host_set(host)
         self.httprobe_options = '-c -t 100 -p ' + self.host + '_httprobe.txt ' + self.host
