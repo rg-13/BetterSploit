@@ -17,6 +17,7 @@ class CMDCenter(cmd.Cmd):
         self.ruler = "-"
         self.use_rawinput = True
         self.cmdqueue = []
+        self.config = ["%s=%s" % (k, v) for k, v in os.environ.items()]
         self.last_command = ""
         self.last_command_time = time.time()
         self.last_command_result = ""
@@ -63,174 +64,213 @@ class CMDCenter(cmd.Cmd):
         #self.last_time_str_short = time.strftime("%Y-%m-%d", time.localtime(self.last_time))
 #------------------------------------------------------------------------------
 
+    def last_command_time(self):
+        self.last_command_time = time.time()
 
+
+
+    def still_running(self):
+        if time.time() - self.last_command_time > 60:
+            return False
+        else:
+            return True
+        
 
     def do_exit(self, args):
         """Exit the program."""
         return True
     
     def do_sqlmap(self, url):
-        if url:
-            self.sqlmap(url)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a URL")
+            if url:
+                self.sqlmap(url)
+            else:
+                print("[!] Please enter a URL")
+
+    def pass_env(self):
+        return self.config
+
+
 
     def do_wpscan(self, url):
-        if url:
-            self.wpscan(url)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a URL")
+            if url:
+                self.wpscan(url)
+            else:
+                print("[!] Please enter a URL")
 
     def do_dnsrecon(self, domain):
-        if domain:
-            self.dnsrecon(domain)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a domain")
+            if domain:
+                self.dnsrecon(domain)
+            else:
+                print("[!] Please enter a domain")
 
     def do_nuclei(self, domain):
-        if domain:
-            self.nuclei(domain)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a domain")
-        
+            if domain:
+                self.nuclei(domain)
+            else:
+                print("[!] Please enter a domain")
+            
     def do_nikto(self, url):
-        if url:
-            self.nikto(url)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a URL")
+            if url:
+                self.nikto(url)
+            else:
+                print("[!] Please enter a URL")
         
     def do_httpx(self, url):
-        if url:
-            self.httpx(url)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a URL")
+            if url:
+                self.httpx(url)
+            else:
+                print("[!] Please enter a URL")
     
     def do_dirsearch(self, url):
-        if url:
-            self.dirsearch(url)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a URL")
+            if url:
+                self.dirsearch(url)
+            else:
+                print("[!] Please enter a URL")
         
     def do_sublist3r(self, domain):
-        if domain:
-            self.sublist3r(domain)
-        else:
-            print("[!] Please enter a domain")
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
+        else:        
+            if domain:
+                self.sublist3r(domain)
+            else:
+                print("[!] Please enter a domain")
 
     def do_subjack(self, domain):
-        if domain:
-            self.subjack(domain)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a domain")
-    
+            if domain:
+                self.subjack(domain)
+            else:
+                print("[!] Please enter a domain")
+        
     def do_amass(self, domain):
-        if domain:
-            self.amass(domain)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a domain")
-    
-    def do_massdns(self, domain):
-        if domain:
-            self.massdns(domain)
-        else:
-            print("[!] Please enter a domain")
-    
-    def do_massdns_big(self, domain):
-        if domain:
-            self.massdns_big(domain)
-        else:
-            print("[!] Please enter a domain")
-    
-    def do_massdns_small(self, domain):
-        if domain:
-            self.massdns_small(domain)
-        else:
-            print("[!] Please enter a domain")
+            if domain:
+                self.amass(domain)
+            else:
+                print("[!] Please enter a domain")
 
+    def do_massdns(self, domain, type=None):
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
+        else:
+            if domain:
+                switch = {
+                    'big': self.massdns_big,
+                    'small': self.massdns_small
+                }
+                if type:
+                    switch[type](domain)
+                else:
+                    print("[!] Please enter a domain")
+            else:
+                print("[!] Please enter a domain")
+                
     def do_wayback(self, domain):
-        if domain:
-            self.wayback(domain)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a domain")
-    
-    def do_dirb(self, domain):
-        if domain:
-            self.dirb(domain)
-        else:
-            print("[!] Please enter a domain")
+            if domain:
+                self.wayback(domain)
+            else:
+                print("[!] Please enter a domain")
 
-    def do_dirb_big(self, domain):
-        if domain:
-            self.dirb_big(domain)
+
+    def do_dirb(self, url, type=None):
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a domain")
-    
-    def do_dirb_small(self, domain):
-        if domain:
-            self.dirb_small(domain)
-        else:
-            print("[!] Please enter a domain")
-    
+            if url:
+                switch = {
+                    'big': self.dirb_big,
+                    'small': self.dirb_small
+                }
+                if type:
+                    switch[type](url)
+                else:
+                    print("[!] Please enter a URL")
+            else:
+                print("[!] Please enter a URL")
+
     def do_jexboss(self, url):
-        if url:
-            self.jexboss(url)
-        else:
-            print("[!] Please enter a URL")
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
+        else: 
+            if url:
+                self.jexboss(url)
+            else:
+                print("[!] Please enter a URL")
     
     def do_joomscan(self, url):
-        if url:
-            self.joomscan(url)
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
         else:
-            print("[!] Please enter a URL")
+            if url:
+                self.joomscan(url)
+            else:
+                print("[!] Please enter a URL")
     
     def do_gobuster(self, url):
-        if url:
-            self.gobuster(url)
-        else:
-            print("[!] Please enter a URL")
+        if self.still_running():
+            if url:
+                self.gobuster(url)
+            else:
+                print("[!] Please enter a URL")
     
     def do_harvest(self, url):
-        if url:
-            self.harvest(url)
-        else:
-            print("[!] Please enter a URL")
+        if self.still_running():
+            if url:
+                self.harvest(url)
+            else:
+                print("[!] Please enter a URL")
     
     def do_wpscan(self, url):
-        if url:
-            self.wpscan(url)
-        else:
-            print("[!] Please enter a URL")
+        if self.still_running():
+            if url:
+                self.wpscan(url)
+            else:
+                print("[!] Please enter a URL")
     
-    def do_nmap(self, url):
-        if url:
-            self.nmap(url)
-        else:
-            print("[!] Please enter a URL")
+    def do_nmap(self, url, scan_type=None):
+        if self.still_running():
+            if url:
+                switch = {
+                    "scan": self.nmap_scan,
+                    "scan_big": self.nmap_scan_big,
+                    "scan_small": self.nmap_scan_small,
+                    "scan_full": self.nmap_scan_full,
+                    "scan_fast": self.nmap_scan_fast,
+                                        "scan_custom": self.nmap_scan_custom
+                }
+                if scan_type == None:
+                    self.nmap_scan(url)
+                elif scan_type in switch:
+                    switch[scan_type](url)
+                else:
+                    print("[!] Please enter a valid scan type")
     
-    def do_nmap_full(self, url):
-        if url:
-            self.nmap_full(url)
-        else:
-            print("[!] Please enter a URL")
-    
-    def do_nmap_fast(self, url):
-        if url:
-            self.nmap_fast(url)
-        else:
-            print("[!] Please enter a URL")
-    
-    def do_nmap_top(self, url):
-        if url:
-            self.nmap_top(url)
-        else:
-            print("[!] Please enter a URL")
-    
-    def do_nmap_all(self, url):
-        if url:
-            self.nmap_all(url)
-        else:
-            print("[!] Please enter a URL")
-        
-    
-
-

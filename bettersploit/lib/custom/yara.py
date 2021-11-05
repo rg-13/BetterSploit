@@ -1,10 +1,75 @@
+from os import times
+import os
 import yara
+from bettersploit import gitgrabber
 
 
 class Yara:
     def __init__(self, rule_path):
-        self.rule_path = rule_path
         self.rules = None
+        self.rules_repo = gitgrabber.GitRepo("https://github.com/advanced-threat-research/Yara-Rules.git")
+        self.rules_path = "/custom/yara_rules/"
+        
+    def get_rules_from_repo(self):
+        repo = self.rules_repo
+        if dir.exists(self.rule_path):
+            print("[+] Rules directory exists")
+            print("[+] Getting rules from repo")
+            gitgrabber.GitRepo.clone(repo, self.rule_path)
+        else:
+                print("[-] Rules directory does not exist")
+                print("[-] Creating rules directory")
+                os.mkdir(self.rule_path)
+                print("[+] Getting rules from repo")
+                gitgrabber.GitRepo.clone(repo, self.rule_path)
+        for root, dirs, files in os.walk(self.rule_path):
+            for file in files:
+                if file.endswith(".yar"):
+                    print("[+] Loading rule {}".format(file))
+                    rule_path = os.path.join(root, file)
+                    rule_name = file.split(".yar")[0]
+                    rule_content = open(rule_path, "r").read()
+                    self.add_rule(rule_name, rule_content)
+        print("[+] Rules loaded")
+        print("[+] Compiling rules")
+        self.complie_rules()
+        print("[+] Rules compiled")
+
+
+    def scan_exe(self, file_path):
+        for root, dirs, files in os.walk(self.rule_path):
+            for file in files:
+                if file.endswith(".yar"):
+                    print("[+] Loading rulse {}".format(file))
+                    rule_path = os.path.join(root, file)
+                    rule_name = file.split(".yar")[0]
+                    rule_content = open(rule_path, "r").read()
+                    self.add_rule(rule_name, rule_content)
+                    self.complie_rules()
+                if self.yara_match_rule(file_path, rule_name):
+                    print("[+] Match found")
+                    print("[+] Rule: {}".format(rule_name))
+                    print("[+] File: {}".format(file_path))
+                    print("[+] Match: {}".format(self.yara_match_rule(file_path, rule_name)))
+                    print("[+] Time: {}".format(times()))
+                    print("[+] Signature: {}".format(self.yara_match_rule(file_path, rule_name)))
+                    matches = self.rules.match(file_path)
+                return matches
+
+    def match_rule(self, file_path, rule_name):
+        matches = self.rules.match(file_path)
+        for match in matches:
+            if match.rule == rule_name:
+                return True
+        return False
+    
+    def yara_match_rule(self, file_path, rule_name):
+        matches = self.rules.match(file_path)
+        for match in matches:
+            if match.rule == rule_name:
+                return True
+        return False
+    
 
     def load_rules(self):
         self.rules = yara.compile(self.rule_path)
@@ -72,7 +137,9 @@ class Yara:
 
     def yara_match(self):
         return yara.match
-        
+
+    def yara_match_rule(self):
+        return yara.
     
 
     if __name__ == "__main__":
