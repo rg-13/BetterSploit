@@ -42,7 +42,18 @@ ascii_art=[
 ░█▀▀█ █▀▀ ▀▀█▀▀ ▀▀█▀▀ █▀▀ █▀▀█ ░█▀▀▀█ █▀▀█ █── █▀▀█ ─▀─ ▀▀█▀▀ 
 ░█▀▀▄ █▀▀ ──█── ──█── █▀▀ █▄▄▀ ─▀▀▀▄▄ █──█ █── █──█ ▀█▀ ──█── 
 ░█▄▄█ ▀▀▀ ──▀── ──▀── ▀▀▀ ▀─▀▀ ░█▄▄▄█ █▀▀▀ ▀▀▀ ▀▀▀▀ ▀▀▀ ──▀──""",
+  
 
+"""
+───────────────▄▄───▐█
+───▄▄▄───▄██▄──█▀───█─▄
+─▄██▀█▌─██▄▄──▐█▀▄─▐█▀
+▐█▀▀▌───▄▀▌─▌─█─▌──▌─▌
+▌▀▄─▐──▀▄─▐▄─▐▄▐▄─▐▄─▐▄
+BᴇᴛᴛᴇʀSᴘʟᴏɪᴛ
+
+
+"""
 
 ]
 
@@ -126,6 +137,7 @@ class CMDCenter(cmd.Cmd):
         return True
     
     def do_sqlmap(self, url):
+        "sqlmap <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -140,6 +152,7 @@ class CMDCenter(cmd.Cmd):
 
 
     def do_wpscan(self, url):
+        "wpscan <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -149,6 +162,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
 
     def do_dnsrecon(self, domain):
+        "dnsrecon <domain>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -158,6 +172,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a domain")
 
     def do_nuclei(self, domain):
+        "nuclei <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -167,6 +182,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a domain")
             
     def do_nikto(self, url):
+        "nikto <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -176,6 +192,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
         
     def do_httpx(self, url):
+        "httpx <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -185,6 +202,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
     
     def do_dirsearch(self, url):
+        "dirsearch <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -194,6 +212,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
         
     def do_sublist3r(self, domain):
+        "sublist3r <domain>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:        
@@ -203,6 +222,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a domain")
 
     def do_subjack(self, domain):
+        "subjack <domain>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -212,6 +232,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a domain")
         
     def do_amass(self, domain):
+        "amass <domain>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -221,6 +242,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a domain")
 
     def do_massdns(self, domain, type=None):
+        "massdns <domain> [type]"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -237,6 +259,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a domain")
                 
     def do_wayback(self, domain):
+        "wayback <domain>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -247,6 +270,7 @@ class CMDCenter(cmd.Cmd):
 
 
     def do_dirb(self, url, type=None):
+        "dirb <url> [type]"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -263,6 +287,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
 
     def do_jexboss(self, url):
+        "jexboss <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else: 
@@ -272,6 +297,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
     
     def do_joomscan(self, url):
+        "joomscan <url>"
         if self.still_running():
             print("[!] Please wait until the previous command has finished")
         else:
@@ -281,6 +307,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
     
     def do_gobuster(self, url):
+        "gobuster <url>"
         if self.still_running():
             if url:
                 self.gobuster(url)
@@ -288,6 +315,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
     
     def do_harvest(self, url):
+        "harvest <url>"
         if self.still_running():
             if url:
                 self.harvest(url)
@@ -295,6 +323,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
     
     def do_wpscan(self, url):
+        "wpscan <url>"
         if self.still_running():
             if url:
                 self.wpscan(url)
@@ -302,6 +331,7 @@ class CMDCenter(cmd.Cmd):
                 print("[!] Please enter a URL")
     
     def do_nmap(self, url, scan_type=None):
+        "nmap <url> [type]"
         if self.still_running():
             if url:
                 switch = {
