@@ -1,11 +1,11 @@
 #Wireshark Shell for BetterSploit
 import cmd
-import tshark_wrapper
+from  tshark_wrapper import Tshark
 
 class TsharkShell(cmd.Cmd):
     prompt = 'tshark> '
     intro = 'Welcome to the tshark shell. Type help or ? to list commands.\n'
-    tshark = tshark.Tshark()
+    tshark = Tshark()
 
     def do_show(self, line):
         '''Show packets'''
