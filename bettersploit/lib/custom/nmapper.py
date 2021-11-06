@@ -4,7 +4,7 @@ import sys
 import time
 import requests
 import subprocess
-from subprocess import SW_HIDE, Popen, PIPE
+from subprocess import  Popen, PIPE
 import socket
 
 

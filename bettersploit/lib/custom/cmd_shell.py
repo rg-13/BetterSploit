@@ -5,9 +5,9 @@ import time
 import glob
 import random
 import random
-import wrappers as tools
+from wrappers import Wrappers as tools
 #from tshark_shell import Sharkshell as tshark_shell
-import yara_cmd as yara_shell
+from yara_cmd import YaraShell as yara_shell
 import yara as yara_lib
 from nmapper import nmap_scan
 import subprocess
@@ -88,25 +88,24 @@ class CMDCenter(cmd.Cmd):
         self.tools = tools
         self.nmap = nmap_scan
         self.sqlmap = tools.sqlmap
-        self.wpscan = tools.wpscan
         self.dnsrecon = tools.dnsrecon
         self.nuclei = tools.nuclei
         self.nikto = tools.nikto
         self.httpx = tools.httpx
         self.dirsearch = tools.dirsearch
         self.sublist3r = tools.sublist3r
-        self.subjack = tools.subjack
-        self.wpscan = tools.wpscan
+        #self.subjack = tools.subjack #not in wrapper yet
+        #self.wpscan = tools.wpscan #removed
         self.amass = tools.amass
         self.dirb = tools.dirb
         self.dirsearch = self.dirsearch
-        self.jexboss = self.tools.jexboss
-        self.joomscan = self.tools.joomscan
-        self.gobuster = self.tools.gobuster
-        self.cmsmap = self.tools.cmsmap
-        self.harvest = self.tools.theharvester
+        self.jexboss = tools.jexboss
+        self.joomscan = tools.joomscan
+        self.gobuster = tools.gobuster
+        self.cmsmap = tools.cmsmap
+        self.harvest = tools.theharvester
         self.yara = yara_shell()
-        self.tshell = tshark_shell()
+        #self.tshell = tshark_shell() #broke
         #//TO ADD:
         #self.golismero = tools.golismero
 
