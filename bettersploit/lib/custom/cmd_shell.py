@@ -78,7 +78,7 @@ class CMDCenter(cmd.Cmd):
         self.ruler = "-"
         self.use_rawinput = True
         self.cmdqueue = []
-        self.config = ["%s=%s" % (k, v) for k, v in os.environ.items()]
+        self.config = os.environ.get("shell_command") #["%s=%s" % (k, v) for k, v in os.environ.items()]
         self.last_command = ""
         self.last_command_time = time.time()
         self.last_command_result = ""
@@ -149,13 +149,9 @@ class CMDCenter(cmd.Cmd):
         return self.config
 
 
-    def do_yara(self):
+    def do_yara(self, args):
         "opens YARA interactive shell"
-        if self.still_running():
-            print("[!] Please wait until the previous command has finished")
-        else:
-            yara_shell = YaraShell()
-            yara_shell.cmdloop()
+        self.yara.cmdloop()
 
     def do_dnsrecon(self, domain):
         "dnsrecon <domain>"

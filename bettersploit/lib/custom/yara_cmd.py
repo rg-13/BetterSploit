@@ -1,13 +1,18 @@
 import cmd, sys
 from yara import yara
-
+#from cmd_shell import CMDCenter
 
 
 
 
 class YaraShell(cmd.Cmd):
+    def __init__(self):
+        cmd.Cmd.__init__(self)
     intro = 'Welcome to the Yara Shell. Type help or ? to list commands.\n'
     prompt = '(yara) '
+    
+    #def do_better_sploit():
+            #CMDCenter.cmdloop()
 
     def do_set(self, args):
             yara = self.bsp.yara
