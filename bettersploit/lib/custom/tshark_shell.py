@@ -5,7 +5,7 @@ from  tshark_wrapper import Shark
 class Sharkshell(cmd.Cmd):
     prompt = 'tshark> '
     intro = 'Welcome to the tshark shell. Type help or ? to list commands.\n'
-    self.tshark = Shark()
+    self.tshark = Shark(interface='wlan0')
 
     def do_show(self, line):
         '''Show packets'''
