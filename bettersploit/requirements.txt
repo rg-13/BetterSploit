@@ -16,3 +16,4 @@ pefile
 pymetasploit3
 pyyaml
 PyGithub
+pyshark
