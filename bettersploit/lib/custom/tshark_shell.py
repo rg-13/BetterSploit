@@ -1,6 +1,6 @@
 #Wireshark Shell for BetterSploit
 import cmd
-from tshark_wrapper import tshark
+import tshark_wrapper
 
 class TsharkShell(cmd.Cmd):
     prompt = 'tshark> '
