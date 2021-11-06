@@ -6,7 +6,7 @@ import glob
 import random
 import random
 import wrappers as tools
-from tshark_shell import Sharkshell as tshark_shell
+#from tshark_shell import Sharkshell as tshark_shell
 import yara_cmd as yara_shell
 import yara as yara_lib
 from nmapper import nmap_scan
@@ -158,15 +158,6 @@ class CMDCenter(cmd.Cmd):
             yara_shell = YaraShell()
             yara_shell.cmdloop()
 
-    
-    def do_wireshark(self):
-        "opens wireshark(tshark) interactive shell"
-        if self.still_running():
-            print("[!] Please wait until the previous command has finished")
-        else:
-            tshark_shell = TsharkShell()
-            tshark_shell.cmdloop()              
-
     def do_dnsrecon(self, domain):
         "dnsrecon <domain>"
         if self.still_running():
@@ -317,7 +308,15 @@ class CMDCenter(cmd.Cmd):
                 self.nmap.nmap_scan(url, scan_type)
             else:
                 print("[!] Please enter a URL")
-
+""" 
+    def do_wireshark(self):
+        "opens wireshark(tshark) interactive shell"
+        if self.still_running():
+            print("[!] Please wait until the previous command has finished")
+        else:
+            tshark_shell = TsharkShell()
+            tshark_shell.cmdloop()              
+"""   
 if __name__ == '__main__': 
     CMDCenter().cmdloop()
     #CMDCenter().do_nmap("https://www.google.com")
