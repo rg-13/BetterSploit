@@ -6,7 +6,7 @@ import glob
 import random
 import random
 import wrappers as tools
-import tshark_shell as tshark
+from tshark_shell import Sharkshell as tshark_shell
 import yara_cmd as yara_shell
 import yara as yara_lib
 from nmapper import nmap_scan

@@ -1,7 +1,7 @@
 import pyshark
 
 
-class TShark:
+class Shark:
     def __init__(self, interface):
         self.interface = interface
         self.cap = pyshark.LiveCapture(interface)
