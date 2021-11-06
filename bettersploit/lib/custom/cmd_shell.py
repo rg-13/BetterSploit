@@ -5,10 +5,13 @@ import time
 import glob
 import random
 import random
-from yara_cmd import *
-from tshark_shell import TsharkShell
-from wrappers import Wrappers
+import wrappers as tools
+import tshark_shell as tshark
+import yara_cmd as yara_shell
+import yara as yara_lib
 from nmapper import nmap_scan
+import subprocess
+#import bettersploit.lib.custom as bsp
 
 ascii_art=[
 '''
@@ -82,30 +85,28 @@ class CMDCenter(cmd.Cmd):
         self.last_command_error = ""
         self.last_command_error_time = time.time()
         self.last_command_error_result = ""
-        self.tools = Wrappers()
-        self.nmap = self.nmap()
-        self.sqlmap = self.tools.sqlmap
-        self.wpscan = self.tools.wpscan
-        self.dnsrecon = self.tools.dnsrecon
-        self.nuclei = self.tools.nuclei
-        self.nikto = self.tools.nikto
-        self.httpx = self.tools.httpx
-        self.dirsearch = self.tools.dirsearch
-        self.sublist3r = self.tools.sublist3r
-        self.subjack = self.tools.subjack
-        self.wpscan = self.tools.wpscan
-        self.amass = self.tools.amass
-        self.dirb = self.tools.dirb
-        self.dirb_big = self.tools.dirb_big
-        self.dirb_small = self.tools.dirb_small
-        self.dirsearch = self.tools.dirsearch
+        self.tools = tools
+        self.nmap = nmap_scan
+        self.sqlmap = tools.sqlmap
+        self.wpscan = tools.wpscan
+        self.dnsrecon = tools.dnsrecon
+        self.nuclei = tools.nuclei
+        self.nikto = tools.nikto
+        self.httpx = tools.httpx
+        self.dirsearch = tools.dirsearch
+        self.sublist3r = tools.sublist3r
+        self.subjack = tools.subjack
+        self.wpscan = tools.wpscan
+        self.amass = tools.amass
+        self.dirb = tools.dirb
+        self.dirsearch = self.dirsearch
         self.jexboss = self.tools.jexboss
         self.joomscan = self.tools.joomscan
         self.gobuster = self.tools.gobuster
         self.cmsmap = self.tools.cmsmap
         self.harvest = self.tools.theharvester
-        self.yara = YaraShell()
-        self.tshell = TsharkShell()
+        self.yara = yara_shell()
+        self.tshell = tshark_shell()
         #//TO ADD:
         #self.golismero = tools.golismero
 
