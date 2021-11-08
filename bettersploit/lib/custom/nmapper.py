@@ -43,9 +43,9 @@ class nmap_scan:
         self.telnet_nse = "telnet-*"
         self.xmpp_nse = "xmpp-*", "jabber-*"
         self.cloud_nse = "aws-*", "azure-*", "cloud-*", "digitalocean-*", "gcp-*", "hcloud-*", "linode-*", "packet-*", "vultr-*"
+        self.upnp_nse = "upnp-*", "upnp-info"
         self.cve_nse = "cve-*"
-        self.nse_list = self.http_nse, self.all_network_nse, self.smb_nse, self.ssh_nse, self.dns_nse, self.ftp_nse, self.smtp_nse, self.mysql_nse, self.mssql_nse, self.oracle_nse, self.postgres_nse, self.rdp_nse, self.vnc_nse, self.telnet_nse, self.xmpp_nse, self.cloud_nse
-
+        self.list_all = "afp-*", "ftp-*", "http-*", "imap-*", "ldap-*", "mssql-*", "mysql-*", "nfs-*", "nntp-*", "pop3-*", "rdp-*", "smb-*", "smtp-*", "snmp-*", "ssh-*", "telnet-*", "vmauthd-*", "vnc-*", "xmpp-*"
         self.all_ports = "1-65535"
         self.cloud_ports = "1-65535"
         self.smb_ports = "139,445"
@@ -65,6 +65,9 @@ class nmap_scan:
         self.ssh_ports = "22", "2222", "2223"
         self.dns_ports = "53", "853", "8686", "8888"
         self.network_ports = "22,2222,2223,53,853,8686,445,139"
+        self.upnp_tcp_ports = "1900"
+        self.upnp_udp_ports = "5000"
+        
         self.nmap_timeout = "--max-rtt-timeout=500ms"
     
     def nmap_scan_output(self):
@@ -125,6 +128,7 @@ class nmap_scan:
             "telnet": self.telnet_nse,
             "xmpp": self.xmpp_nse,
             "cloud": self.cloud_nse,
+            "upnp": self.upnp_nse,
             "cve": self.cve_nse,
             "all": self.nse_list
         }
@@ -143,6 +147,14 @@ class nmap_scan:
                 port = self.network_ports
                 self.nmap_args = "-sV -Pn -p {} --script {}".format(port, nse_libs)
                 self.run_nmap(host, port, nse_libs, self.timeout)
+
+            elif nse_libs == self.upnp_nse:
+                port = self.upnp_tcp_ports + "," + self.upnp_udp_ports
+                self.nmap_args = "-sV -Pn -p {} --script {}".format(port, nse_libs)
+                self.run_nmap(host, port, nse_libs, self.timeout)
+
+
+            elif nse_libs == self.upnp_udp_nse:
 
             elif nse_libs == self.cloud_nse:
                 port = self.cloud_ports
