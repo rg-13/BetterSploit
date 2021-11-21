@@ -6,6 +6,8 @@ import requests
 import subprocess
 from subprocess import  Popen, PIPE
 import socket
+import argparse
+
 
 
 #-------
@@ -67,8 +69,9 @@ class nmap_scan:
         self.network_ports = "22,2222,2223,53,853,8686,445,139"
         self.upnp_tcp_ports = "1900"
         self.upnp_udp_ports = "5000"
-        
         self.nmap_timeout = "--max-rtt-timeout=500ms"
+    
+
     
     def nmap_scan_output(self):
         with open(self.nmap_scan_output, 'w') as f:
@@ -94,6 +97,164 @@ class nmap_scan:
         self.host = self.get_ip(host)
         return host
     
+    def set_port(self, port):
+        self.port = port
+        return port
+    
+    def set_nmap_args(self, nmap_args):
+        self.nmap_args = nmap_args
+        return nmap_args
+    
+    def set_nmap_path(self, nmap_path):
+        self.nmap_path = nmap_path
+        return nmap_path
+    
+    def set_nmap_timeout(self, nmap_timeout):
+        self.nmap_timeout = nmap_timeout
+        return nmap_timeout
+    
+    def set_nmap_scan_output(self, nmap_scan_output):
+        self.nmap_scan_output = nmap_scan_output
+        return nmap_scan_output
+    
+    def set_http_nse(self, http_nse):
+        self.http_nse = http_nse
+        return http_nse
+    
+    def set_all_network_nse(self, all_network_nse):
+        self.all_network_nse = all_network_nse
+        return all_network_nse
+    
+    def set_smb_nse(self, smb_nse):
+        self.smb_nse = smb_nse
+        return smb_nse
+    
+    def set_ssh_nse(self, ssh_nse):
+        self.ssh_nse = ssh_nse
+        return ssh_nse
+    
+    def set_dns_nse(self, dns_nse):
+        self.dns_nse = dns_nse
+        return dns_nse
+    
+    def set_ftp_nse(self, ftp_nse):
+        self.ftp_nse = ftp_nse
+        return ftp_nse
+    
+    def set_smtp_nse(self, smtp_nse):
+        self.smtp_nse = smtp_nse
+        return smtp_nse
+    
+    def set_mysql_nse(self, mysql_nse):
+        self.mysql_nse = mysql_nse
+        return mysql_nse
+    
+    def set_mssql_nse(self, mssql_nse):
+        self.mssql_nse = mssql_nse
+        return mssql_nse
+    
+    def set_postgres_nse(self, postgres_nse):
+        self.postgres_nse = postgres_nse
+        return postgres_nse
+    
+    def set_vnc_nse(self, vnc_nse):
+        self.vnc_nse = vnc_nse
+        return vnc_nse
+    
+    def set_xmpp_nse(self, xmpp_nse):
+        self.xmpp_nse = xmpp_nse
+        return xmpp_nse
+    
+    def set_upnp_nse(self, upnp_nse):
+        self.upnp_nse = upnp_nse
+        return upnp_nse
+    
+    def set_all_ports(self, all_ports):
+        self.all_ports = all_ports
+        return all_ports
+    
+    def set_cloud_ports(self, cloud_ports):
+        self.cloud_ports = cloud_ports
+        return cloud_ports
+    
+    def set_smb_ports(self, smb_ports):
+        self.smb_ports = smb_ports
+        return smb_ports
+    
+    def set_ssh_ports(self, ssh_ports):
+        self.ssh_ports = ssh_ports
+        return ssh_ports
+    
+    def set_dns_ports(self, dns_ports):
+        self.dns_ports = dns_ports
+        return dns_ports
+    
+    def set_ftp_ports(self, ftp_ports):
+        self.ftp_ports = ftp_ports
+        return ftp_ports
+    
+    def set_smtp_ports(self, smtp_ports):
+        self.smtp_ports = smtp_ports
+        return smtp_ports
+    
+    def set_mysql_ports(self, mysql_ports):
+        self.mysql_ports = mysql_ports
+        return mysql_ports
+    
+    def set_mssql_ports(self, mssql_ports):
+        self.mssql_ports = mssql_ports
+        return mssql_ports
+    
+    def set_postgres_ports(self, postgres_ports):
+        self.postgres_ports = postgres_ports
+        return postgres_ports
+
+    def set_network_ports(self, network_ports):
+        self.network_ports = network_ports
+        return network_ports
+    
+    def set_upnp_tcp_ports(self, upnp_tcp_ports):
+        self.upnp_tcp_ports = upnp_tcp_ports
+        return upnp_tcp_ports
+    
+    def set_upnp_udp_ports(self, upnp_udp_ports):
+        self.upnp_udp_ports = upnp_udp_ports
+        return upnp_udp_ports
+    
+    def set_nmap_scan(self, nmap_scan):
+        self.nmap_scan = nmap_scan
+        return nmap_scan
+    
+    def set_nmap_scan_output_read(self, nmap_scan_output_read):
+        self.nmap_scan_output_read = nmap_scan_output_read
+        return nmap_scan_output_read
+    
+    def set_nmap_scan_output_write(self, nmap_scan_output_write):
+        self.nmap_scan_output_write = nmap_scan_output_write
+        return nmap_scan_output_write
+    
+    def set_nmap_scan_output_write_file(self, nmap_scan_output_write_file):
+        self.nmap_scan_output_write_file = nmap_scan_output_write_file
+        return nmap_scan_output_write_file
+    
+
+
+    def get_ip(self, host):
+        try:
+            ip = socket.gethostbyname(host)
+            return ip
+        except socket.gaierror:
+            print("[-] Error: Hostname could not be resolved. Exiting")
+            sys.exit()
+        
+    def get_hostname(self, ip):
+        try:
+            hostname = socket.gethostbyaddr(ip)
+            return hostname
+        except socket.herror:
+            print("[-] Error: Could not resolve hostname. Exiting")
+            sys.exit()
+     
     def run_nmap(self, host, port, nse, timeout):
         self.set_host(host)
         self.nmap_args = "-sV -Pn -p {} --script {}".format(port, nse)
@@ -152,9 +313,6 @@ class nmap_scan:
                 port = self.upnp_tcp_ports + "," + self.upnp_udp_ports
                 self.nmap_args = "-sV -Pn -p {} --script {}".format(port, nse_libs)
                 self.run_nmap(host, port, nse_libs, self.timeout)
-
-
-            elif nse_libs == self.upnp_udp_nse:
 
             elif nse_libs == self.cloud_nse:
                 port = self.cloud_ports
@@ -254,3 +412,56 @@ class nmap_scan:
             self.nmap_scan_output_read = f.read()
         f.close()
         return self.nmap_scan_output_read
+
+    def nmap_scan_output_write(self, nmap_scan_output_write):
+        with open(self.nmap_scan_output, 'w') as f:
+            f.write(nmap_scan_output_write)
+        f.close()
+
+    def nmap_scan_output_append(self, nmap_scan_output_append):
+        with open(self.nmap_scan_output, 'a') as f:
+            f.write(nmap_scan_output_append)
+        f.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Nmap Scanner')
+    parser.add_argument('-t', '--target', help='Target IP address', required=True)
+    parser.add_argument('-p', '--ports', help='Port range to scan', required=False) 
+    parser.add_argument('-s', '--scan', help='Scan type', required=False)   
+    parser.add_argument('-o', '--output', help='Output file', required=False)
+    parser.add_argument('-d', '--debug', help='Debug mode', required=False)
+    args = parser.parse_args()
+
+    if args.target:
+        target = args.target
+    else:
+        print("[!] Please enter a target IP address")
+        sys.exit()
+    
+    if args.ports:
+        ports = args.ports
+    else:
+        ports = None
+    
+    if args.scan:
+        scan = args.scan
+    else:
+        scan = None
+    
+    if args.output:
+        output = args.output
+    else:
+        output = None
+    
+    if args.debug:
+        debug = args.debug
+    else:
+        debug = None
+    
+    NmapScan = nmap_scan(target, ports, scan, output, debug)
+    NmapScan.nmap_scan()
+    
+
+if __name__ == '__main__':
+    main()
